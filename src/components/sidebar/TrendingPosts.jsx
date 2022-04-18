@@ -6,17 +6,17 @@ import { Box, CardMedia, Grid, Paper, Typography } from "@mui/material";
 const TrendingItems = () => {
   return (
     <>
-      <Box sx={{ px: 3,my:4 }}>
+      <Box sx={{ my: 4 }}>
         <Typography
           variant="h6"
-          sx={{ fontWeight: "bold", color: "#535353" }}
+          sx={{ fontWeight: "bold", color: "#378fb5" }}
           gutterBottom
         >
           Trending Posts
         </Typography>
-        <Box mb={1}>
+        <Box sx={{my:1}}>
           <Link className="normalLink" to="#">
-            <Paper  elevation={1}>
+            <Paper elevation={1}>
               <Grid container>
                 <Grid item xs={4}>
                   <CardMedia
@@ -28,10 +28,7 @@ const TrendingItems = () => {
                 </Grid>
                 <Grid item xs={8}>
                   <Box sx={{ p: 0.5 }}>
-                    <Typography
-                      variant="body"
-                      
-                    >
+                    <Typography variant="body">
                       tell me now Lorem sciunt it deleniti asperiores
                       exercitationem quasi provident in mollitia
                     </Typography>
@@ -43,7 +40,7 @@ const TrendingItems = () => {
         </Box>
         <Box mb={1}>
           <Link className="normalLink" to="#">
-            <Paper  elevation={1}>
+            <Paper elevation={1}>
               <Grid container>
                 <Grid item xs={4}>
                   <CardMedia
@@ -55,10 +52,7 @@ const TrendingItems = () => {
                 </Grid>
                 <Grid item xs={8}>
                   <Box sx={{ p: 0.5 }}>
-                    <Typography
-                      variant="body"
-                    
-                    >
+                    <Typography variant="body">
                       tell me now Lorem sciunt it deleniti asperiores
                       exercitationem quasi provident in mollitia
                     </Typography>

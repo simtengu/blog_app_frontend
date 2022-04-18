@@ -12,12 +12,12 @@ import { Button, Typography,Paper } from "@mui/material";
 
 export default function Categories() {
   return (
-    <Box sx={{ width: "100%", maxWidth: 360, my: 4 }}>
+    <Box sx={{ my: 4 }}>
       <Paper>
         <Box sx={{ p: 1 }}>
           <Typography
             variant="h6"
-            sx={{ fontWeight: "bold", color: "#535353", py: 1 }}
+            sx={{ fontWeight: "bold", color: "#378fb5", py: 1 }}
           >
             Post Categories
           </Typography>
@@ -66,31 +66,29 @@ export default function Categories() {
       </Paper>
 
       <Paper sx={{ mt: 4, mb: 2 }}>
-       <Box id="tagsDiv" >
-  
-        <Box sx={{ p: 1 }}>
-          <Typography
-            variant="h6"
-            sx={{ fontWeight: "bold", color: "#535353", py: 1 }}
-          >
-            Post Tags
-          </Typography>
+        <Box id="tagsDiv">
+          <Box sx={{ p: 1 }}>
+            <Typography
+              variant="h6"
+              sx={{ fontWeight: "bold", color: "#378fb5", py: 1 }}
+            >
+              Post Tags
+            </Typography>
+          </Box>
+          <div id="tags">
+            <Button>trending</Button>
+            <Button>trending</Button>
+            <Button>trending</Button>
+            <Button>trending</Button>
+            <Button>trending</Button>
+            <Button>trending</Button>
+            <Button>trending</Button>
+            <Button>trending</Button>
+            <Button>trending</Button>
+            <Button>trending</Button>
+          </div>
         </Box>
-        <div id="tags">
-          <Button>trending</Button>
-          <Button>trending</Button>
-          <Button>trending</Button>
-          <Button>trending</Button>
-          <Button>trending</Button>
-          <Button>trending</Button>
-          <Button>trending</Button>
-          <Button>trending</Button>
-          <Button>trending</Button>
-          <Button>trending</Button>
-        </div>
-      </Box>  
       </Paper>
-     
     </Box>
   );
 }

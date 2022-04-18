@@ -1,5 +1,6 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
+import Auth from '../pages/Auth';
 import Homepage from '../pages/Homepage';
 import NewPost from '../pages/NewPost';
 import PostDetails from '../pages/PostDetails';
@@ -15,6 +16,7 @@ const Navigation = () => {
     <Route path="/" element={<Homepage />} />
     <Route element={<Layout />}>
      <Route  path="/post_details" element={<PostDetails />} />
+     <Route  path="/auth" element={<Auth />} />
      <Route element={<Protected />}>
          <Route  path="/user_account/index" element={<UserProfileIndex />} />
          <Route  path="/post/new" element={<NewPost />} />

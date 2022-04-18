@@ -37,3 +37,19 @@ code {
     text-decoration: underline;
   }
 }
+
+
+.d-none {
+  display: "none";
+}
+
+.tagsDiv {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  padding: 3px;
+
+  .tagWrapper {
+    margin: 2px 4px; 
+  }
+}

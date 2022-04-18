@@ -29,4 +29,25 @@ code {
 .normalLink:hover {
   text-decoration: underline;
 }
+
+.d-none {
+  display: "none";
+}
+
+.tagsDiv {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  padding: 3px;
+}
+
+.tagsDiv .tagWrapper {
+  margin: 2px 4px;
+}
 /*# sourceMappingURL=index.css.map */

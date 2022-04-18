@@ -4,15 +4,22 @@ import img from "../../images/bg1.jpg";
 const SpecificUserPosts = () => {
     return (
       <>
-        <Box sx={{ px: 4, my: 4 }}>
+        <Box sx={{ my: 4 }}>
           <Typography
             variant="h6"
-            sx={{ fontWeight: "bold", color: "#535353" }}
+            sx={{ fontWeight: "bold", color: "#378fb5" }}
             gutterBottom
           >
             Specific user Posts
           </Typography>
-          <Box sx={{ display: "flex", justifyContent: "space-between",flexWrap:"wrap", mt: 2 }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              flexWrap: "wrap",
+              mt: 2,
+            }}
+          >
             <Card>
               <Box
                 id="UserImg"
@@ -41,7 +48,6 @@ const SpecificUserPosts = () => {
                   minWidth: 70,
                   minHeight: 70,
                   borderRadius: 4,
-                  
                 }}
               ></Box>
               <Box sx={{ p: 1 }}>
@@ -61,7 +67,6 @@ const SpecificUserPosts = () => {
                   minWidth: 70,
                   minHeight: 70,
                   borderRadius: 4,
-                  
                 }}
               ></Box>
               <Box sx={{ p: 1 }}>
@@ -81,7 +86,6 @@ const SpecificUserPosts = () => {
                   minWidth: 70,
                   minHeight: 70,
                   borderRadius: 4,
-                  
                 }}
               ></Box>
               <Box sx={{ p: 1 }}>
@@ -91,7 +95,6 @@ const SpecificUserPosts = () => {
                 </Typography>
               </Box>
             </Card>
- 
           </Box>
         </Box>
       </>

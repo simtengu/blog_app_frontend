@@ -18,12 +18,15 @@ const Homepage = () => {
           <Posts />
         </Grid>
         <Grid item xs={12} md={4}>
+          <Box sx={{px:{xs:2,md:4}}}>
           {/* sidebar section...................... */}
           <Box sx={{display:"flex",justifyContent:"center"}}>
           <Categories />
           </Box>
           <TrendingItems />
           <SpecificUserPosts />
+
+          </Box>
         </Grid>
       </Grid>
     </>
