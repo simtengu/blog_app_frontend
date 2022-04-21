@@ -1,9 +1,61 @@
+import React,{useState} from "react";
 import { Box, Button, Grid, TextField, Typography } from "@mui/material";
-import React from "react";
 import loginImg from "../../images/login.jpg";
+import { useGlobalInfo } from "../AppContext";
+import { Navigate, useNavigate } from "react-router-dom";
+import api from "../../api";
+import { LoadingButton } from "@mui/lab";
+import { Logout } from "@mui/icons-material";
+import SnackBar from "../displayComponents/SnackBar";
 const Login = () => {
+
+  const navigate = useNavigate();
+  //appcontext(global state).......
+  const {
+    activateRegisterSection,
+    handleOpenSnackbar,
+    handleSetAuthUser,
+  } = useGlobalInfo();
+//end of app context
+    let [username, setUsername] = useState("");
+    let [password, setPassword] = useState("");
+    let [isLoading, setIsLoading] = useState(false);
+
+    const handleFormSubmit = async (e) => {
+      e.preventDefault();
+      if (!username || !password) {
+             handleOpenSnackbar(
+               5000,
+               "error",
+               "Make sure you enter both email and password"
+             );
+        return;
+      }
+      //logging in a user..............
+      const userData = { email: username, password };
+      try {
+        setIsLoading(true);
+        const response = await api.post("/login", userData);
+        setIsLoading(false);
+        if (response.status === 200) {
+          const { token, user } =  response.data;
+          localStorage.setItem("blog_app_token", token);
+        handleSetAuthUser(user)
+          navigate(`/user_account/index`, { replace: true });
+        }
+      } catch (error) {
+        setIsLoading(false);
+           let error_message = error.response
+             ? error.response.data.message
+             : error.message;
+           handleOpenSnackbar(10000, "error", error_message);
+      }
+    };
+
+
   return (
     <>
+      <SnackBar />
       <Grid container>
         <Grid item xs={12} sm={4} md={5}>
           <Box sx={{ display: { xs: "none", sm: "block" } }}>
@@ -15,7 +67,7 @@ const Login = () => {
           </Box>
         </Grid>
         <Grid item xs={12} sm={8} md={7}>
-          <Box sx={{ ml: { md: 4 }, mt: { md: 4 }, p: 1 }}>
+          <Box sx={{ ml: { md: 4 }, mt: { md: 4 }, p: 2 }}>
             <Typography
               variant="h5"
               sx={{ color: "#378fb5", fontWeight: "bold" }}
@@ -29,10 +81,12 @@ const Login = () => {
                   fullWidth
                   size="small"
                   margin="normal"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                   required
                 />
               </div>
-            
+
               <div>
                 <TextField
                   type="password"
@@ -40,27 +94,45 @@ const Login = () => {
                   fullWidth
                   size="small"
                   margin="normal"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   required
                 />
               </div>
               <div>
-                <Button
-                  variant="contained"
-                  size="medium"
-                  sx={{ width: "100%", mt: 2, bgcolor: "#378fb5" }}
-                >
-                  Login
-                </Button>
+                {isLoading ? (
+                  <LoadingButton
+                    color="primary"
+                    loading={isLoading}
+                    loadingPosition="center"
+                    startIcon={<Logout />}
+                    variant="contained"
+                    size="medium"
+                    sx={{ width: "100%", mt: 2, bgcolor: "#378fb5" }}
+                  >
+                    Login
+                  </LoadingButton>
+                ) : (
+                  <Button
+                    variant="contained"
+                    size="medium"
+                    sx={{ width: "100%", mt: 2, bgcolor: "#378fb5" }}
+                    onClick={handleFormSubmit}
+                  >
+                    Login
+                  </Button>
+                )}
 
                 <Button
                   sx={{
                     mt: 2,
-                    color: "#b6b6b6",
+                    color: "#808080",
                     textTransform: "lowercase",
                     fontSize: 16,
                   }}
+                  onClick={activateRegisterSection}
                 >
-                 I don't have an account
+                  I don't have an account
                 </Button>
               </div>
             </Box>

@@ -6,7 +6,7 @@ import useScrollTrigger from "@mui/material/useScrollTrigger";
 import Fab from "@mui/material/Fab";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import Zoom from "@mui/material/Zoom";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"
 import {
   AccountCircle,
   Mail,
@@ -30,6 +30,8 @@ import {
   Box,
   AppBar,
 } from "@mui/material";
+import secureApi from "../api/secureApi"
+import { useGlobalInfo } from "./AppContext";
 
 //end of scroll to top
 //scroll to top component.......................................
@@ -71,6 +73,7 @@ function ScrollTop(props) {
 //The main app bar component .........................
 
 const ResponsiveAppBar = (props) => {
+  const navigate = useNavigate();
   //menu section ...........................
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -82,6 +85,37 @@ const ResponsiveAppBar = (props) => {
     setAnchorEl(null);
   };
 
+  //appcontext.......
+  const {
+    activateLoginSection,
+    activateRegisterSection,
+    authUser,
+    handleLogOut,
+    handleSetAuthUser
+  } = useGlobalInfo();
+
+
+  React.useEffect(() => {
+    
+        if (!authUser) {
+          const token = localStorage.getItem("blog_app_token");
+          if (token) {
+            const fetchAuthUser = async () => {
+              const response = await secureApi.get("/user");
+              const { user } = response.data;
+              if (user) {
+               handleSetAuthUser(user)
+              }
+            };
+            try {
+              fetchAuthUser();
+            } catch (error) {
+              console.log(error.response.data.message);
+              localStorage.removeItem("blog_app_token");
+            }
+          }
+        }
+  }, [])
   return (
     <>
       <AppBar sx={{ backgroundColor: "#343a40" }} position="static">
@@ -126,18 +160,76 @@ const ResponsiveAppBar = (props) => {
                   sx={{ color: "whitesmoke", width: { xs: 50, md: 250 } }}
                 />
               </Box>
-              <Box sx={{ display: { xs: "none", md: "inline" } }}>
-                <Link to="/wishlist">
-                  <IconButton>
-                    <StarBorder sx={{ color: "#bcbcbc" }} />
+
+              {authUser ? (
+                <div style={{ display: "inline", marginLeft: 4 }}>
+                  <IconButton
+                    sx={{ mx: 1 }}
+                    id="basic-button"
+                    aria-controls={open ? "basic-menu" : undefined}
+                    aria-haspopup="true"
+                    aria-expanded={open ? "true" : undefined}
+                    onClick={handleClick}
+                    color="inherit"
+                  >
+                    <AccountCircle />
                   </IconButton>
-                </Link>
-                <Link to="/cart">
-                  <Badge color="secondary" badgeContent="9">
-                    <ShoppingCart sx={{ color: "#bcbcbc", mx: 1 }} />
-                  </Badge>
-                </Link>
-              </Box>
+                  <Menu
+                    id="basic-menu"
+                    anchorEl={anchorEl}
+                    open={open}
+                    onClose={handleClose}
+                    MenuListProps={{
+                      "aria-labelledby": "basic-button",
+                    }}
+                  >
+                    <MenuItem
+                      onClick={() => {
+                        navigate(`/user_account/index`);
+                        handleClose();
+                      }}
+                    >
+                      My account
+                    </MenuItem>
+                    <MenuItem onClick={handleLogOut}>Logout</MenuItem>
+                  </Menu>
+                </div>
+              ) : (
+                <div style={{ display: "inline" }}>
+                  <Button
+                    sx={{
+                      mx: 1,
+                      color: "#dd9b00",
+                      textTransform: "lowercase",
+                      fontSize: 16,
+                    }}
+                    size="small"
+                    variant="text"
+                    onClick={() => {
+                      activateRegisterSection();
+                      navigate("/auth");
+                    }}
+                  >
+                    Register
+                  </Button>
+                  <Button
+                    sx={{
+                      mx: 1,
+                      color: "#dd9b00",
+                      textTransform: "lowercase",
+                      fontSize: 16,
+                    }}
+                    size="small"
+                    variant="text"
+                    onClick={() => {
+                      activateLoginSection();
+                      navigate("/auth");
+                    }}
+                  >
+                    Login
+                  </Button>
+                </div>
+              )}
             </Box>
           </Toolbar>
         </Container>
