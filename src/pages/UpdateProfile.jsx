@@ -1,7 +1,10 @@
+import React, { useReducer, useRef, useState,useEffect } from "react";
 import { Image, Upload } from "@mui/icons-material";
 import {
+  Backdrop,
   Box,
   Button,
+  CircularProgress,
   Grid,
   IconButton,
   Stack,
@@ -9,31 +12,22 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import React, { useReducer, useRef, useState } from "react";
 import img from "../images/ps.jpg";
+import { useGlobalInfo } from "../components/AppContext";
+import SnackBar from "../components/displayComponents/SnackBar";
+import axios from "../api/secureApi";
 const UpdateProfile = () => {
-  const [selectedImg, setSelectedImg] = useState("");
-  const [imgUrl, setImgUrl] = useState("");
-  const imgRef = useRef();
-  const handleSelect = () => {
-    imgRef.current.click();
-  };
+  //app context.........................
+  const {
+    authUser,
+    handleOpenSnackbar,
+    handleSetAuthUser,
+    handleOpenBackdrop,
+    handleCloseBackdrop,
+    handleCloseSnackbar,
+  } = useGlobalInfo();
+  //end of app context(global data)
 
-  const handleSetImg = (e) => {
-    let file = e.target.files[0];
-    setImgUrl(URL.createObjectURL(file));
-    setSelectedImg(file);
-  };
-
-  const handleImgUpload = () => {
-    if (!selectedImg) {
-      console.log("you have to select image first");
-      return;
-    }
-    console.log(selectedImg)
-  };
-
-  
   const reducer = (state, action) => {
     switch (action.type) {
       case "setFirstName":
@@ -47,63 +41,92 @@ const UpdateProfile = () => {
 
       case "setPhone":
         return { ...state, phone: action.payload };
-      case "setPassword":
-        return { ...state, password: action.payload };
-      case "setConfirmPassword":
-        return { ...state, confirm_password: action.payload };
+
+      case "setUser":
+        return { ...action.payload };
+
       default:
         return state;
     }
   };
-  let initialState = {
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
-    password: "",
-    confirm_password: "",
+
+  const [userInfo, dispatch] = useReducer(reducer, authUser);
+  const [loading, setLoading] = useState(false);
+
+  const [selectedImg, setSelectedImg] = useState("");
+  const [imgUrl, setImgUrl] = useState("");
+  const imgRef = useRef();
+  const handleSelect = () => {
+    imgRef.current.click();
   };
 
-  const [userInfo, dispatch] = useReducer(reducer, initialState);
+  let displayImg = imgUrl || userInfo.picture;
 
-
-  const handleError = (message) => {
-    console.log('handling error')
-    // redux_dispatch(activateError(message));
-    // setTimeout(() => {
-    //   redux_dispatch(deactivateError());
-    // }, 3000);
+  const handleSetImg = (e) => {
+    let file = e.target.files[0];
+    setImgUrl(URL.createObjectURL(file));
+    setSelectedImg(file);
   };
 
-  const handleFormSubmit = (e) => {
-    e.preventDefault();
+  const handleImgUpload = async () => {
+    if (!selectedImg) {
+      handleOpenSnackbar(4000, "error", "you have to select image first");
+      return;
+    }
 
+    let data = new FormData();
+    data.append("picture", selectedImg);
+    data.append("userId", authUser._id);
+
+    try {
+      setLoading(true);
+      let rs = await axios.patch("/update_picture", data, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      if (rs.status === 200) {
+        let rsData = await rs.data;
+        handleSetAuthUser(rsData.user);
+        dispatch({
+          type: "setUser",
+          payload: rsData.user,
+        });
+        console.log(userInfo);
+        handleOpenSnackbar(3000, "success", "Image updated successfully");
+      }
+
+      setImgUrl("");
+      setSelectedImg("");
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      setImgUrl("");
+      setSelectedImg("");
+      let error_message = error.response
+        ? error.response.data.message
+        : error.message;
+
+      handleOpenSnackbar(4000, "error", error_message);
+    }
+  };
+
+  const updateUser = async () => {
     if (
       !userInfo.firstName ||
       !userInfo.lastName ||
       !userInfo.email ||
-      !userInfo.phone ||
-      !userInfo.password ||
-      !userInfo.confirm_password
+      !userInfo.phone 
     ) {
-      handleError("Please fill in all fields");
+      handleOpenSnackbar(4000, "error", "Please fill in all fields");
       return;
     }
 
     //checking if phone number characters are valid(10) ...........................
     if (!(userInfo.phone.split("").length === 10)) {
-      handleError("Phone field must have exactly 10 characters");
-      return;
-    }
-    //checking if password was confirmed ...........................
-    if (!(userInfo.password === userInfo.confirm_password)) {
-      handleError("password entered doesn't match");
-      return;
-    }
-
-    //checking if confirmed password is greater than  or equal to 4 ...........................
-    if (userInfo.password.length < 4) {
-      handleError("Password must have atleast 4 characters");
+      handleOpenSnackbar(
+        4000,
+        "error",
+        "Phone field must have exactly 10 characters"
+      );
       return;
     }
 
@@ -113,14 +136,47 @@ const UpdateProfile = () => {
       lastName: userInfo.lastName,
       email: userInfo.email,
       phone: userInfo.phone,
-      password: userInfo.password,
     };
 
- 
+
+       try {
+         setLoading(true);
+         let rs = await axios.patch(`/user/${authUser._id}`, userData);
+         if (rs.status === 200) {
+           let rsData = rs.data;
+           handleSetAuthUser(rsData.user)
+           handleOpenSnackbar(3000, "success", "Your profile was updated successfully");
+         }
+         setLoading(false);
+       } catch (error) {
+         setLoading(false);
+         let error_message = error.response
+           ? error.response.data.message
+           : error.message;
+
+         handleOpenSnackbar(4000, "error", error_message);
+       }
+
   };
+
+  useEffect(() => {
+    
+    return () => {
+      handleCloseSnackbar()
+    }
+  }, [])
 
   return (
     <>
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={loading}
+        onClick={() => setLoading(false)}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
+      <SnackBar />
+
       <Box sx={{ p: 2 }}>
         <Grid container justifyContent="center" mt={3}>
           <Grid item xs={12} sm={10} md={8}>
@@ -129,7 +185,7 @@ const UpdateProfile = () => {
                 <Grid item xs={12} sm={3} md={4}>
                   <img
                     style={{ height: "auto", width: "92%", borderRadius: 10 }}
-                    src={imgUrl ? imgUrl : img}
+                    src={displayImg ? displayImg : img}
                   />
                   <input
                     style={{ display: "none" }}
@@ -229,28 +285,13 @@ const UpdateProfile = () => {
                           }
                         />
                       </div>
-                      <div>
-                        <TextField
-                          type="password"
-                          label="password"
-                          fullWidth
-                          size="small"
-                          margin="normal"
-                          required
-                          value={userInfo.password}
-                          onChange={(e) =>
-                            dispatch({
-                              type: "setPassword",
-                              payload: e.target.value,
-                            })
-                          }
-                        />
-                      </div>
+
                       <div>
                         <Button
                           variant="contained"
                           size="medium"
                           sx={{ width: "100%", mt: 2, bgcolor: "#378fb5" }}
+                          onClick={updateUser}
                         >
                           Update
                         </Button>

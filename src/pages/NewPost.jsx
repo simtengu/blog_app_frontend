@@ -14,11 +14,37 @@ import {
   FormControlLabel,
 } from "@mui/material";
 import img from "../images/ps.jpg";
-import { tags, categories, brands } from "../resources/productData";
+import { tags, categories } from "../resources/productData";
+import { useGlobalInfo } from "../components/AppContext";
+import BackDrop from "../components/displayComponents/BackDrop";
+import SnackBar from "../components/displayComponents/SnackBar";
+import axios from "../api/secureApi";
 const NewPost = () => {
+  //app context(global data)
+  const { handleOpenSnackbar, handleOpenBackdrop, handleCloseBackdrop ,authUser} =
+    useGlobalInfo();
+  //end of global data
   const [selectedImg, setSelectedImg] = useState("");
   const [imgUrl, setImgUrl] = useState("");
   const imgRef = useRef();
+  //tag checkboxes initial state..................
+  const tagsInfo = tags.map((tag) => {
+    return { name: tag, checked: false };
+  });
+
+  let initialPostState = {
+    owner:authUser._id,
+    title: "",
+    body: "",
+    category: "",
+  };
+  //tags............
+  const [allTags, setAllTags] = useState(tagsInfo);
+  const [newPostInfo, setNewPostInfo] = useState(initialPostState);
+  const [postTags, setPostTags] = useState([]);
+  const [postImages, setPostImages] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+
   const handleSelect = () => {
     imgRef.current.click();
   };
@@ -29,37 +55,53 @@ const NewPost = () => {
     setSelectedImg(file);
   };
 
-  const handleImgUpload = () => {
+  //upload img...................
+  const handleImgUpload = async () => {
     if (!selectedImg) {
-      console.log("you have to select image first");
+      handleOpenSnackbar(
+        4000,
+        "error",
+        "You have not selected the image to upload..."
+      );
       return;
     }
-    console.log(selectedImg);
+
+    //image has been selected ......upload
+    let data = new FormData();
+    data.append("picture", selectedImg);
+
+    try {
+      setIsLoading(true);
+      let rs = await axios.post("post_image/upload", data, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      let responseData = await rs.data;
+      let imgPath = responseData.path;
+
+      let newProductImagesList = postImages.concat([imgPath]);
+      setPostImages(newProductImagesList);
+      setImgUrl("");
+      setSelectedImg("");
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+      setImgUrl("");
+      setSelectedImg("");
+      let error_message = error.response
+        ? error.response.data.message
+        : error.message;
+
+      handleOpenSnackbar(10000, "error", error_message);
+    }
   };
 
-  let initialProductState = {
-    title: "",
-    description: "",
-    price: "",
-    category: "",
-    brand: "",
-  };
+  //end of img upload secton...........
 
-  //tag checkboxes initial state..................
-  const tagsInfo = tags.map((tag) => {
-    return { name: tag, checked: false };
-  });
-  //tags............
-  const [allTags, setAllTags] = useState(tagsInfo);
-  const [newProductInfo, setNewProductInfo] = useState(initialProductState);
-  const [productTags, setProductTags] = useState([]);
-  const [productImages, setProductImages] = useState([]);
-
-  const updateProductInfo = (e) => {
+  const updatePostInfo = (e) => {
     const fieldName = e.target.name;
     const newValue = e.target.value;
 
-    setNewProductInfo({ ...newProductInfo, [fieldName]: newValue });
+    setNewPostInfo({ ...newPostInfo, [fieldName]: newValue });
   };
 
   const handleTagsSelection = (event) => {
@@ -75,14 +117,14 @@ const NewPost = () => {
 
     if (tag.checked) {
       //a tag has been unchecked ......... removing from product tags list
-      let newProductTags = productTags.filter((tag) => tag != selectedTag);
-      setProductTags(newProductTags);
-      console.log(productTags);
+      let newPostTags = postTags.filter((tag) => tag != selectedTag);
+      setPostTags(newPostTags);
+      console.log(postTags);
     } else {
       // a tag has been checked ........... adding into the product tags list
       let newTagArray = [selectedTag];
-      let newProductTags = productTags.concat(newTagArray);
-      setProductTags(newProductTags);
+      let newPostTags = postTags.concat(newTagArray);
+      setPostTags(newPostTags);
     }
 
     //updating check status of a specific tag
@@ -93,12 +135,62 @@ const NewPost = () => {
     setAllTags(newAllTagsInfo);
   };
 
-  const handleProductSubmit = async (e) => {
-    console.log("about to submit a product");
+  const handlePostSubmit = async () => {
+    //primary validation.......................
+    if (postImages.length < 1) {
+      handleOpenSnackbar(4000, "error", "Please upload atleast one one image.");
+      return;
+    }
+
+    if (
+      newPostInfo.category === "" ||
+      newPostInfo.title === "" ||
+      newPostInfo.body === ""
+    ) {
+      handleOpenSnackbar(
+        5000,
+        "error",
+        "Please make sure you have filled all inputs"
+      );
+      return;
+    }
+
+    let postData = {
+      ...newPostInfo,
+      tags: postTags,
+      images: postImages,
+    };
+  
+    //submitting the post.........
+    try {
+
+      handleOpenBackdrop();
+      const rs = await axios.post("/post",postData)
+      handleCloseBackdrop();
+      //setting feedback
+      if(rs.status === 201){
+        handleOpenSnackbar(3000, "success", "The product was created successfully");
+      }
+      //reseting new product state................
+      setNewPostInfo(initialPostState);
+      setPostTags([]);
+      setPostImages([]);
+      setImgUrl("");
+      setSelectedImg("");
+      setAllTags(tagsInfo);
+    } catch (error) {
+      let error_message = error.response
+        ? error.response.data.message
+        : error.message;
+      handleCloseBackdrop();
+      handleOpenSnackbar(10000, "error", error_message);
+    }
   };
 
   return (
     <>
+      <BackDrop />
+      <SnackBar />
       <Box sx={{ mt: 2, p: 2 }}>
         <Grid container>
           <Grid item xs={12} sm={3} md={4}>
@@ -114,36 +206,56 @@ const NewPost = () => {
             >
               Create new Post
             </Typography>
-            <Grid container>
-              <Grid item xs={7}>
-                  <Box sx={{px:3}}>
-                <img
-                  style={{ height: "auto", width: "92%", borderRadius: 10 }}
-                  src={imgUrl ? imgUrl : img}
-                />
+            <Grid container columnSpacing={1} rowSpacing={1}>
+              <Grid item xs={9} sx={{ mb: 2 }}>
+                <Box sx={{ px: 3 }}>
+                  <img
+                    style={{ height: "auto", width: "92%", borderRadius: 10 }}
+                    src={imgUrl ? imgUrl : img}
+                  />
 
-                <input
-                  style={{ display: "none" }}
-                  ref={imgRef}
-                  onChange={handleSetImg}
-                  type="file"
-                />
-                <Stack direction="row" my={2}>
-                  <IconButton onClick={handleSelect} sx={{ color: "#378fb5" }}>
-                    <Image />
-                  </IconButton>
-                  <IconButton
-                    sx={{ color: "#378fb5" }}
-                    onClick={handleImgUpload}
-                  >
-                    <Tooltip title="upload" arrow placement="right">
-                      <Upload />
-                    </Tooltip>
-                  </IconButton>
-                </Stack>
-
-                  </Box>
+                  <input
+                    style={{ display: "none" }}
+                    ref={imgRef}
+                    onChange={handleSetImg}
+                    type="file"
+                  />
+                  <Stack direction="row" my={2} sx={{ mb: 0 }}>
+                    <IconButton
+                      onClick={handleSelect}
+                      sx={{ color: "#378fb5" }}
+                    >
+                      <Image />
+                    </IconButton>
+                    <IconButton
+                      sx={{ color: "#378fb5" }}
+                      onClick={handleImgUpload}
+                    >
+                      <Tooltip title="upload" arrow placement="right">
+                        <Upload />
+                      </Tooltip>
+                    </IconButton>
+                  </Stack>
+                  {isLoading && (
+                    <Typography variant="caption" color="secondary">
+                      uploading image..........
+                    </Typography>
+                  )}
+                </Box>
               </Grid>
+              {postImages.length > 0 &&
+                postImages.map((img,index) => {
+                  return (
+                    <Grid key={index} item xs={6} sm={4}>
+                      {" "}
+                      <img
+                        src={img}
+                        style={{ width: "100%", height: "auto" }}
+                        alt="post img"
+                      />{" "}
+                    </Grid>
+                  );
+                })}
             </Grid>
           </Grid>
           <Grid item xs={12} sm={9} md={8}>
@@ -169,8 +281,8 @@ const NewPost = () => {
                     margin="normal"
                     fullWidth
                     name="title"
-                    value={newProductInfo.title}
-                    onChange={updateProductInfo}
+                    value={newPostInfo.title}
+                    onChange={updatePostInfo}
                   />
                 </div>
 
@@ -182,8 +294,8 @@ const NewPost = () => {
                     margin="normal"
                     name="category"
                     fullWidth
-                    value={newProductInfo.category}
-                    onChange={updateProductInfo}
+                    value={newPostInfo.category}
+                    onChange={updatePostInfo}
                   >
                     {categories.map((option, index) => (
                       <MenuItem key={index} value={option}>
@@ -224,9 +336,9 @@ const NewPost = () => {
                     minRows={4}
                     size="normal"
                     margin="normal"
-                    name="description"
-                    value={newProductInfo.description}
-                    onChange={updateProductInfo}
+                    name="body"
+                    value={newPostInfo.body}
+                    onChange={updatePostInfo}
                   />
                 </div>
 
@@ -235,7 +347,7 @@ const NewPost = () => {
                   size="large"
                   startIcon={<Save />}
                   sx={{ mt: 4, bgcolor: "#378fb5" }}
-                  onClick={handleProductSubmit}
+                  onClick={handlePostSubmit}
                 >
                   Save
                 </Button>

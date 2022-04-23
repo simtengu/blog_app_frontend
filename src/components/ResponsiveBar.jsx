@@ -91,15 +91,15 @@ const ResponsiveAppBar = (props) => {
     activateRegisterSection,
     authUser,
     handleLogOut,
-    handleSetAuthUser
+    handleSetAuthUser,handleOpenBackdrop,handleCloseBackdrop
   } = useGlobalInfo();
 
 
   React.useEffect(() => {
     
-        if (!authUser) {
-          const token = localStorage.getItem("blog_app_token");
-          if (token) {
+        const token = localStorage.getItem("blog_app_token");
+        if (token) {
+          if (!authUser) {
             const fetchAuthUser = async () => {
               const response = await secureApi.get("/user");
               const { user } = response.data;
@@ -110,7 +110,7 @@ const ResponsiveAppBar = (props) => {
             try {
               fetchAuthUser();
             } catch (error) {
-              console.log(error.response.data.message);
+              console.log(error);
               localStorage.removeItem("blog_app_token");
             }
           }
