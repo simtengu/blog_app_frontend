@@ -149,9 +149,18 @@ const NewPost = () => {
     ) {
       handleOpenSnackbar(
         5000,
-        "error",
+        "warning",
         "Please make sure you have filled all inputs"
       );
+      return;
+    }
+
+    if(newPostInfo.body.length < 200){
+          handleOpenSnackbar(
+            5000,
+            "warning",
+            "Please make sure body of the post is atleast 200 characters long."
+          );
       return;
     }
 
@@ -244,7 +253,7 @@ const NewPost = () => {
                 </Box>
               </Grid>
               {postImages.length > 0 &&
-                postImages.map((img,index) => {
+                postImages.map((img, index) => {
                   return (
                     <Grid key={index} item xs={6} sm={4}>
                       {" "}
@@ -298,8 +307,8 @@ const NewPost = () => {
                     onChange={updatePostInfo}
                   >
                     {categories.map((option, index) => (
-                      <MenuItem key={index} value={option}>
-                        {option}
+                      <MenuItem key={index} value={option.name}>
+                        {option.name}
                       </MenuItem>
                     ))}
                   </TextField>
@@ -328,7 +337,17 @@ const NewPost = () => {
                   </div>
                 </div>
 
-                <div>
+                <div style={{marginTop:14}}>
+                  {newPostInfo.body && (
+                    <Stack direction="row" justifyContent="flex-end">
+                      <Typography variant="body2" sx={{position:"relative",top:14}}>
+                        {`${newPostInfo.body.length} character${
+                          newPostInfo.body.length > 1 ? "s" : ""
+                        }`}
+                      </Typography>
+                    </Stack>
+                  )}
+
                   <TextField
                     label="Post Body"
                     multiline

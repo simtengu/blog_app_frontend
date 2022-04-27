@@ -1,7 +1,9 @@
 import React, { useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import api from "../api"
 const contextInit = React.createContext();
 const AppContext = ({ children }) => {
+  
   //authentication section..............................  ...
   const [isLoginOpen, setIsLoginOpen] = useState(true);
   const [authUser, setAuthUser] = useState("");
@@ -21,6 +23,8 @@ const AppContext = ({ children }) => {
   const handleLogOut = () => {
     setAuthUser("");
     localStorage.removeItem("blog_app_token");
+  
+
   };
 
   //end of authentication section..............................
@@ -62,7 +66,7 @@ const AppContext = ({ children }) => {
   const [posts, setPosts] = useState({
     allPosts: [],
     userPosts: [],
-    selectedPost: {}
+    trendingPosts: []
   });
 
   const handleSetUserPosts = (items) => {
@@ -73,20 +77,24 @@ const AppContext = ({ children }) => {
     setPosts({ ...posts, allPosts: items });
   };
 
-  const getThePost = async (postId) => {
+  const getTrendingPosts = async () => {
     try {
-      handleOpenBackdrop();
-      const rs = await api.get(`/post/${postId}`);
+      
+      const rs = await api.get(`/posts/trending`);
       let rsData = rs.data;
-      handleCloseBackdrop();
+     
       if (rs.status === 200) {
-        setPosts({ ...posts, selectedPost: rsData.post });
+        setPosts({ ...posts, trendingPosts: rsData.posts });
       }
     } catch (error) {
-      handleCloseBackdrop();
+      
       console.log(error);
     }
   };
+  
+  const setTrendingPosts = (payload)=>{
+    setPosts({ ...posts, trendingPosts: payload });
+  }
 
   //end of posts section....................
   const globalData = {
@@ -105,7 +113,8 @@ const AppContext = ({ children }) => {
     posts,
     handleSetAllPosts,
     handleSetUserPosts,
-    getThePost
+    getTrendingPosts,
+    setTrendingPosts,
   };
   return (
     <>

@@ -368,8 +368,8 @@ const UpdatePost = () => {
                     onChange={updatePostInfo}
                   >
                     {categories.map((option, index) => (
-                      <MenuItem key={index} value={option}>
-                        {option}
+                      <MenuItem key={index} value={option.name}>
+                        {option.name}
                       </MenuItem>
                     ))}
                   </TextField>

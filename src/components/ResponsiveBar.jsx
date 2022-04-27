@@ -6,7 +6,7 @@ import useScrollTrigger from "@mui/material/useScrollTrigger";
 import Fab from "@mui/material/Fab";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import Zoom from "@mui/material/Zoom";
-import { Link, useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom";
 import {
   AccountCircle,
   Mail,
@@ -29,8 +29,11 @@ import {
   Toolbar,
   Box,
   AppBar,
+  List,
+  ListItem,
+  Paper
 } from "@mui/material";
-import secureApi from "../api/secureApi"
+import secureApi from "../api/secureApi";
 import { useGlobalInfo } from "./AppContext";
 
 //end of scroll to top
@@ -75,14 +78,10 @@ function ScrollTop(props) {
 const ResponsiveAppBar = (props) => {
   const navigate = useNavigate();
   //menu section ...........................
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
-  const open = Boolean(anchorEl);
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
   const handleClose = () => {
-    setAnchorEl(null);
+    setIsMenuOpen(false);
   };
 
   //appcontext.......
@@ -90,32 +89,37 @@ const ResponsiveAppBar = (props) => {
     activateLoginSection,
     activateRegisterSection,
     authUser,
-    handleLogOut,
-    handleSetAuthUser,handleOpenBackdrop,handleCloseBackdrop
+    handleSetAuthUser,
+    handleOpenBackdrop,
+    handleCloseBackdrop,
   } = useGlobalInfo();
 
+  const handleLogOut = () => {
+    handleSetAuthUser("");
+    localStorage.removeItem("blog_app_token");
+    navigate("/", { replace: true });
+  };
 
   React.useEffect(() => {
-    
-        const token = localStorage.getItem("blog_app_token");
-        if (token) {
-          if (!authUser) {
-            const fetchAuthUser = async () => {
-              const response = await secureApi.get("/user");
-              const { user } = response.data;
-              if (user) {
-               handleSetAuthUser(user)
-              }
-            };
-            try {
-              fetchAuthUser();
-            } catch (error) {
-              console.log(error);
-              localStorage.removeItem("blog_app_token");
-            }
+    const token = localStorage.getItem("blog_app_token");
+    if (token) {
+      if (!authUser) {
+        const fetchAuthUser = async () => {
+          const response = await secureApi.get("/user");
+          const { user } = response.data;
+          if (user) {
+            handleSetAuthUser(user);
           }
+        };
+        try {
+          fetchAuthUser();
+        } catch (error) {
+          console.log(error);
+          localStorage.removeItem("blog_app_token");
         }
-  }, [])
+      }
+    }
+  }, []);
   return (
     <>
       <AppBar sx={{ backgroundColor: "#343a40" }} position="static">
@@ -125,13 +129,13 @@ const ResponsiveAppBar = (props) => {
             sx={{ display: "flex", flexFlow: 1 }}
           >
             <Box sx={{ display: "flex", flexGrow: 1 }}>
-              <Link to="/" id="logo">
+              <Link style={{textDecoration:"none"}} to="/" id="logo">
                 <Typography
                   variant="h5"
                   component="div"
                   sx={{ color: "#2f87d1", fontWeight: "bolder" }}
                 >
-                  Shop<span style={{ color: "#dd9b00" }}>App</span>
+                  Blog<span style={{ color: "#fff" }}>App</span>
                 </Typography>
               </Link>
             </Box>
@@ -162,44 +166,36 @@ const ResponsiveAppBar = (props) => {
               </Box>
 
               {authUser ? (
-                <div style={{ display: "inline", marginLeft: 4 }}>
+                <div style={{ display: "inline", marginLeft: 4,position:"relative" }}>
                   <IconButton
                     sx={{ mx: 1 }}
-                    id="basic-button"
-                    aria-controls={open ? "basic-menu" : undefined}
-                    aria-haspopup="true"
-                    aria-expanded={open ? "true" : undefined}
-                    onClick={handleClick}
+                    onClick={(e)=>{e.stopPropagation(); setIsMenuOpen(!isMenuOpen)}}
                     color="inherit"
                   >
                     <AccountCircle />
                   </IconButton>
-                  <Menu
-                    id="basic-menu"
-                    anchorEl={anchorEl}
-                    open={open}
-                    onClose={handleClose}
-                    MenuListProps={{
-                      "aria-labelledby": "basic-button",
-                    }}
-                  >
-                    <MenuItem
+                  {isMenuOpen &&  <Paper sx={{p:1,width:180,position:"absolute",top:"30px",right:"17px",zIndex:120}}>
+                  <List>
+                    <ListItem sx={{"&:hover":{bgcolor:"#dcdce2"},cursor:"pointer"}}
                       onClick={() => {
                         navigate(`/user_account/index`);
-                        handleClose();
+                        setIsMenuOpen(false)
+                       
                       }}
                     >
                       My account
-                    </MenuItem>
-                    <MenuItem onClick={handleLogOut}>Logout</MenuItem>
-                  </Menu>
+                    </ListItem>
+                    <ListItem sx={{"&:hover":{bgcolor:"#dcdce2"},cursor:"pointer"}} onClick={handleLogOut}>Logout</ListItem>
+                  </List>
+                  </Paper>}
+                 
                 </div>
               ) : (
                 <div style={{ display: "inline" }}>
                   <Button
                     sx={{
                       mx: 1,
-                      color: "#dd9b00",
+                      color: "#1976d2",
                       textTransform: "lowercase",
                       fontSize: 16,
                     }}
@@ -215,7 +211,7 @@ const ResponsiveAppBar = (props) => {
                   <Button
                     sx={{
                       mx: 1,
-                      color: "#dd9b00",
+                      color: "#1976d2",
                       textTransform: "lowercase",
                       fontSize: 16,
                     }}

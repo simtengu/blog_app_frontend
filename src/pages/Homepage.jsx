@@ -13,7 +13,7 @@ const Homepage = () => {
     <>
       <Hero />
       {/* //posts section................. */}
-      <Grid container>
+      <Grid container sx={{mt:2}}>
         <Grid item xs={12} md={8}>
           <Posts />
         </Grid>

@@ -30,6 +30,10 @@ code {
   text-decoration: underline;
 }
 
+.postLink {
+  text-decoration: none;
+}
+
 .d-none {
   display: "none";
 }
@@ -66,5 +70,56 @@ code {
   bottom: 5px;
   left: 0px;
   display: none;
+}
+
+.footer {
+  margin-top: 30px;
+  background-color: #26658a;
+  padding: 60px 10px;
+  color: rgba(245, 245, 245, 0.671);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.footer #body1 {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 17px;
+}
+
+.footer .links {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start;
+}
+
+.footer .links a {
+  color: #b1c5d1;
+  text-decoration: none;
+}
+
+.footer .links a:hover {
+  text-decoration: underline;
+}
+
+.footer .links h5 {
+  font-weight: bolder;
+  margin-bottom: 11px;
+}
+
+.footer .links ul {
+  list-style: none;
+  text-transform: capitalize;
+  margin: 0px;
+  padding: 0px;
+}
+
+.footer .links ul li {
+  margin-top: 10px;
 }
 /*# sourceMappingURL=index.css.map */

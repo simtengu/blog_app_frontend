@@ -1,10 +1,13 @@
-import React, { useReducer, useRef, useState,useEffect } from "react";
+import React, { useReducer, useRef, useState, useEffect } from "react";
 import { Image, Upload } from "@mui/icons-material";
 import {
   Backdrop,
   Box,
   Button,
   CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogTitle,
   Grid,
   IconButton,
   Stack,
@@ -114,7 +117,7 @@ const UpdateProfile = () => {
       !userInfo.firstName ||
       !userInfo.lastName ||
       !userInfo.email ||
-      !userInfo.phone 
+      !userInfo.phone
     ) {
       handleOpenSnackbar(4000, "error", "Please fill in all fields");
       return;
@@ -138,33 +141,98 @@ const UpdateProfile = () => {
       phone: userInfo.phone,
     };
 
+    try {
+      setLoading(true);
+      let rs = await axios.patch(`/user/${authUser._id}`, userData);
+      if (rs.status === 200) {
+        let rsData = rs.data;
+        handleSetAuthUser(rsData.user);
+        handleOpenSnackbar(
+          3000,
+          "success",
+          "Your profile was updated successfully"
+        );
+      }
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      let error_message = error.response
+        ? error.response.data.message
+        : error.message;
 
-       try {
-         setLoading(true);
-         let rs = await axios.patch(`/user/${authUser._id}`, userData);
-         if (rs.status === 200) {
-           let rsData = rs.data;
-           handleSetAuthUser(rsData.user)
-           handleOpenSnackbar(3000, "success", "Your profile was updated successfully");
-         }
-         setLoading(false);
-       } catch (error) {
-         setLoading(false);
-         let error_message = error.response
-           ? error.response.data.message
-           : error.message;
+      handleOpenSnackbar(4000, "error", error_message);
+    }
+  };
 
-         handleOpenSnackbar(4000, "error", error_message);
-       }
+  //product delete logics.............................
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [password, setPassword] = useState("");
+  const [cPassword, setCPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
+  // dialog logic..................
+  const handleOpenDialog = (id) => {
+    setIsDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setIsDialogOpen(false);
+  };
+
+  const handlePasswordUpdate = async () => {
+    if (!password || !cPassword) {
+      handleOpenSnackbar(
+        3000,
+        "warning",
+        "Make sure you have filled both fields"
+      );
+      return;
+    }
+    if (password !== cPassword) {
+      handleOpenSnackbar(3000, "warning", "Password entered doesn't match");
+      return;
+    }
+
+    if (password.length < 4) {
+      handleOpenSnackbar(
+        3000,
+        "warning",
+        "Password entered must have atleast 4 characters"
+      );
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const rs = await axios.patch(`/password_update/${authUser._id}`, {
+        password,
+      });
+      setIsLoading(false);
+      setIsDialogOpen(false);
+      if (rs.status === 200) {
+        handleOpenSnackbar(
+          3000,
+          "success",
+          "You have successfully upated your password"
+          );
+        }
+      } catch (error) {
+      setIsDialogOpen(false);
+      setIsLoading(false);
+
+      let error_message = error.response
+        ? error.response.data.message
+        : error.message;
+
+      handleOpenSnackbar(4000, "error", error_message);
+    }
   };
 
   useEffect(() => {
-    
     return () => {
-      handleCloseSnackbar()
-    }
-  }, [])
+      handleCloseSnackbar();
+    };
+  }, []);
 
   return (
     <>
@@ -176,6 +244,51 @@ const UpdateProfile = () => {
         <CircularProgress color="inherit" />
       </Backdrop>
       <SnackBar />
+
+      {/* delete post dialog................................... */}
+      <div>
+        <Dialog
+          open={isDialogOpen}
+          onClose={() => setIsDialogOpen(false)}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+          sx={{ p: 2 }}
+        >
+          <DialogTitle sx={{ color: "#378fb5" }}>Change Password</DialogTitle>
+          {isLoading && (
+            <Typography color="warning">updating password.....</Typography>
+          )}
+
+          <Box sx={{ p: 2 }}>
+            <div>
+              <TextField
+                type="password"
+                label="New Password"
+                size="small"
+                margin="normal"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+            <div>
+              <TextField
+                type="password"
+                label="Confirm Password"
+                size="small"
+                margin="normal"
+                value={cPassword}
+                onChange={(e) => setCPassword(e.target.value)}
+              />
+            </div>
+          </Box>
+
+          <DialogActions>
+            <Button onClick={handleCloseDialog}>cancel</Button>
+            <Button onClick={handlePasswordUpdate}>Confirm</Button>
+          </DialogActions>
+        </Dialog>
+      </div>
+      {/* end of delete post dialog................................... */}
 
       <Box sx={{ p: 2 }}>
         <Grid container justifyContent="center" mt={3}>
@@ -294,6 +407,12 @@ const UpdateProfile = () => {
                           onClick={updateUser}
                         >
                           Update
+                        </Button>
+                        <Button
+                          onClick={handleOpenDialog}
+                          sx={{ mt: 2, textTransform: "capitalize" }}
+                        >
+                          Change password
                         </Button>
                       </div>
                     </Box>
