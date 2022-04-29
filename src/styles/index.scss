@@ -58,6 +58,9 @@ code {
   &:hover #indexProductActions {
     display: block;
   };
+  &:focus #indexProductActions {
+    display: block;
+  }
     
   #indexProductActions {
     width: 100%;
@@ -113,4 +116,33 @@ margin-bottom: 11px;
     }
 
     
+}
+
+ .searchResult {
+  
+   display: flex;
+   img {
+     max-width: 20%;
+     
+   }
+ }
+.searchInput {
+   min-width:100%;border:0px;
+   font-size: 18px;
+
+}
+.searchDivContainer {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  background-color: rgba($color: #1780e2, $alpha: 0.3);
+  z-index: 122;
+
+ 
+}
+
+input:focus,select:focus,textarea:focus {
+  outline: none;
 }

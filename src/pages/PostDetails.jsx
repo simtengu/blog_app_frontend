@@ -16,9 +16,8 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import CustomTitle from "../components/CustomTitle";
+import DoubleArrowIcon from "@mui/icons-material/DoubleArrow";
 import SinglePost from "../components/SinglePost";
-import img from "../images/bg1.jpg";
 import api from "../api";
 import axios from "../api/secureApi";
 import Flickity from "react-flickity-component";
@@ -111,6 +110,7 @@ const PostDetails = () => {
         setIsLoading(false);
         if (rs.status === 200) {
           setPost(rsData.post);
+          setRelatedPost(rsData.relatedPosts)
         }
       } catch (error) {
         setIsLoading(false);
@@ -136,6 +136,7 @@ const PostDetails = () => {
     };
     updateTrendingPosts();
   }, [postId]);
+  
 
   if (isLoading) {
     return (
@@ -182,11 +183,11 @@ const PostDetails = () => {
               static // default false
             >
               {post &&
-                post.images.map((image, index) => {
+                post.images.map((img, index) => {
                   return (
                     <img
                       key={index}
-                      src={image}
+                      src={img.image}
                       alt="post image"
                       style={{ width: "100%", height: "auto", marginBottom: 2 }}
                     />
@@ -195,7 +196,7 @@ const PostDetails = () => {
             </Flickity>
           ) : (
             <img
-              src={post.images[0]}
+              src={post.images[0].image}
               alt="post image"
               style={{ maxWidth: "100%", height: "auto", marginBottom: 2 }}
             />
@@ -326,7 +327,10 @@ const PostDetails = () => {
                           src={like.owner}
                           alt="profile picture"
                         />
-                        <Link to={`/user/posts/${like.owner_id}`} className="normalLink">
+                        <Link
+                          to={`/user/posts/${like.owner_id}`}
+                          className="normalLink"
+                        >
                           <Typography color="primary" sx={{ ml: 1 }}>
                             {like.name}
                           </Typography>
@@ -341,12 +345,20 @@ const PostDetails = () => {
         </Box>
         <Divider />
         {relatedPosts.length > 0 && (
-          <Box id="relatedPosts" sx={{ my: 4 }}>
-            <CustomTitle title="You may like these" />
+          <Box id="relatedPosts" sx={{ mt: 4 }}>
+            <Box sx={{ mt: 5, px: 2, py: 1 }}>
+              <Button
+                sx={{ color: "#373737", fontWeight: "bold" }}
+                startIcon={<DoubleArrowIcon />}
+              >
+                You may like these
+              </Button>
+            </Box>
+
             <Grid container mt={1} rowSpacing={1} columnSpacing={1}>
-              <SinglePost img={img} />
-              <SinglePost img={img} />
-              <SinglePost img={img} />
+              {relatedPosts.map((post) => {
+                return <SinglePost post={post} key={post._id} />;
+              })}
             </Grid>
           </Box>
         )}

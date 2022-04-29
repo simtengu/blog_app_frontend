@@ -85,8 +85,8 @@ const FilteredPosts = () => {
             <center>
               <h3>
                 {queryParams.category
-                  ? `There is no  products for this  category `
-                  : `There is no  products for this Tag`}
+                  ? `There is no  posts for this  category `
+                  : `There is no  posts for this Tag`}
               </h3>
             </center>
           </Box>

@@ -1,4 +1,4 @@
-import React, { useReducer, useRef, useState } from "react";
+import React, { useEffect, useReducer, useRef, useState } from "react";
 import { Image, Save, Upload } from "@mui/icons-material";
 import {
   Box,
@@ -13,7 +13,7 @@ import {
   Checkbox,
   FormControlLabel,
 } from "@mui/material";
-import img from "../images/ps.jpg";
+import img from "../images/imgadd.png";
 import { tags, categories } from "../resources/productData";
 import { useGlobalInfo } from "../components/AppContext";
 import BackDrop from "../components/displayComponents/BackDrop";
@@ -21,8 +21,13 @@ import SnackBar from "../components/displayComponents/SnackBar";
 import axios from "../api/secureApi";
 const NewPost = () => {
   //app context(global data)
-  const { handleOpenSnackbar, handleOpenBackdrop, handleCloseBackdrop ,authUser} =
-    useGlobalInfo();
+  const {
+    handleOpenSnackbar,
+    handleOpenBackdrop,
+    handleCloseBackdrop,
+    authUser,
+    handleCloseSnackbar,
+  } = useGlobalInfo();
   //end of global data
   const [selectedImg, setSelectedImg] = useState("");
   const [imgUrl, setImgUrl] = useState("");
@@ -76,9 +81,9 @@ const NewPost = () => {
         headers: { "Content-Type": "multipart/form-data" },
       });
       let responseData = await rs.data;
-      let imgPath = responseData.path;
+      let rsImage = responseData.image;
 
-      let newProductImagesList = postImages.concat([imgPath]);
+      let newProductImagesList = postImages.concat([rsImage]);
       setPostImages(newProductImagesList);
       setImgUrl("");
       setSelectedImg("");
@@ -196,6 +201,13 @@ const NewPost = () => {
     }
   };
 
+  useEffect(() => {
+    
+    return () => {
+      handleCloseSnackbar();
+    };
+  }, [])
+
   return (
     <>
       <BackDrop />
@@ -258,7 +270,7 @@ const NewPost = () => {
                     <Grid key={index} item xs={6} sm={4}>
                       {" "}
                       <img
-                        src={img}
+                        src={img.image}
                         style={{ width: "100%", height: "auto" }}
                         alt="post img"
                       />{" "}

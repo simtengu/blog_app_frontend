@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import img from "../../images/bg.jpg";
-import img1 from "../../images/bg1.jpg";
 import { Box, CardMedia, Grid, Paper, Typography } from "@mui/material";
 import { useGlobalInfo } from "../AppContext";
 const TrendingItems = () => {
@@ -40,10 +38,11 @@ const TrendingItems = () => {
                       <CardMedia
                         component="img"
                         sx={{ width: "100%" }}
-                        image={post.images[0]}
+                        image={post.images[0].image}
                         alt="trending img"
                       />
                     </Grid>
+                    
                     <Grid item xs={8}>
                       <Box sx={{ p: 0.5 }}>
                         <Typography

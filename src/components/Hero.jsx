@@ -1,18 +1,8 @@
-import {
-  Box,
-  Button,
-  Card,
-  CardActionArea,
-  CardContent,
-  CardMedia,
-  Grid,
-  Typography,
-} from "@mui/material";
-import React from "react";
-import img1 from "../images/bg.jpg";
-import img from "../images/bg1.jpg";
-import img2 from "../images/bg2.jpg";
+import React,{useEffect,useState} from "react";
+import { Box, Button, Grid, Typography } from "@mui/material";
+import api from "../api";
 import Flickity from "react-flickity-component";
+import { useNavigate } from "react-router-dom";
 
 const flickityOptions = {
   autoPlay: 6000,
@@ -24,13 +14,17 @@ const flickityOptions = {
 };
 
 const FlickityItem = ({ post }) => {
+  const bg_image = post.images[0].image;
+ 
+  
+    const navigate = useNavigate();
   return (
     <>
       <Box
         sx={{
           width: "100%",
           height: { xs: 300, md: 460 },
-          backgroundImage: `url(${post})`,
+          backgroundImage: `url(${bg_image})`,
           backgroundPosition: "center",
           backgroundSize: "cover",
         }}
@@ -39,7 +33,7 @@ const FlickityItem = ({ post }) => {
           sx={{
             display: "flex",
             flexDirection: "column",
-            justifyContent: "flex-end",
+            justifyContent: { xs: "center", md: "flex-end" },
             height: "100%",
             background:
               "linear-gradient(to bottom,rgba(255,255,255,0.1),rgba(255,255,255,0.1),rgba(0,0,0,0.8))",
@@ -64,16 +58,18 @@ const FlickityItem = ({ post }) => {
                   fontWeight: "bold",
                   color: "#fff",
                   textShadow: "1px 1px 2px grey",
+                  fontSize: { xs: "2rem", sm: "2.2", md: "2.5rem", lg: "3rem" },
                 }}
                 gutterBottom
               >
-                Diamond platnumz lands in london safely...
+                {post.title.substring(0, 48)}..
               </Typography>
               <Button
                 variant="contained"
                 color="primary"
                 size="large"
                 sx={{ mb: 1 }}
+                onClick={() => navigate(`/post_details/${post._id}`)}
               >
                 view more
               </Button>
@@ -86,6 +82,48 @@ const FlickityItem = ({ post }) => {
 };
 
 const Hero = () => {
+const navigate = useNavigate();
+  const [posts, setPosts] = useState([]);
+  const [sidePost,setSidePost] = useState({})
+  const [sidePost1,setSidePost1] = useState({})
+  const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const rs = await api.get("/posts");
+        const rsData = rs.data;
+        setIsLoading(false);
+        if (rs.status === 200) {
+          setPosts(rsData.posts.slice(0, 4));
+          let items = rsData.posts;
+          setSidePost({
+            _id: items[0]._id,
+            title: items[0].title,
+            img: items[0].images[0].image,
+          });
+
+               setSidePost1({
+                 _id: items[1]._id,
+                 title: items[1].title,
+                 img: items[1].images[0].image,
+               });
+        }
+      } catch (error) {
+        setIsLoading(false);
+        console.log(error);
+      }
+    };
+
+    fetchPosts();
+  }, []);
+  if (isLoading) {
+    return (
+      <Box sx={{ width: "100vw", minHeight: "60vh" }}>
+        <center>.</center>
+      </Box>
+    );
+  }
+
   return (
     <>
       <Grid container columnSpacing={0.5}>
@@ -100,20 +138,18 @@ const Hero = () => {
               reloadOnUpdate // default false
               static // default false
             >
-              <FlickityItem post={img2} />
-              <FlickityItem post={img} />
-              <FlickityItem post={img1} />
-
-              {/* <img style={{minWidth:"100%"}}   src={img} />
-            <img  style={{minWidth:"100%"}}  src={img1} />
-            <img  style={{minWidth:"100%"}}  src={img2  } /> */}
+              {posts.length > 0 &&
+                posts.map((post) => {
+                  return <FlickityItem key={post._id} post={post} />;
+                })}
             </Flickity>
           </div>
         </Grid>
-        <Grid item xs={12} md={4}>
+        <Grid item xs={12} md={4} sx={{ display: { xs: "none", md: "block" } }}>
           {/* most viewed posts.............................. */}
 
           <Box
+            onClick={() => navigate(`/post_details/${sidePost._id}`)}
             className="bgImgDiv"
             sx={{
               display: "flex",
@@ -121,7 +157,8 @@ const Hero = () => {
               alignItems: "center",
               width: "100%",
               height: { xs: 150, md: 230 },
-              backgroundImage: `url(${img})`,
+              backgroundImage: `url(${sidePost.img})`,
+              "&:hover": { textDecoration: "underline", color: "#1976d2" },
             }}
           >
             <Typography
@@ -132,12 +169,12 @@ const Hero = () => {
                 textShadow: "1px 1px 8px black",
               }}
             >
-              hello from the last planet Lorem ipsum d inventore esse, id
-              suscipit?
+              {sidePost.title}
             </Typography>
           </Box>
 
           <Box
+            onClick={() => navigate(`/post_details/${sidePost1._id}`)}
             className="bgImgDiv"
             sx={{
               display: "flex",
@@ -145,7 +182,8 @@ const Hero = () => {
               alignItems: "center",
               width: "100%",
               height: { xs: 150, md: 230 },
-              backgroundImage: `url(${img})`,
+              backgroundImage: `url(${sidePost1.img})`,
+              "&:hover": { textDecoration: "underline", color: "#1976d2" },
             }}
           >
             <Typography
@@ -156,8 +194,7 @@ const Hero = () => {
                 textShadow: "1px 1px 8px black",
               }}
             >
-              hello from the last planet Lorem ipsum d inventore esse, id
-              suscipit?
+              {sidePost1.title}
             </Typography>
           </Box>
         </Grid>

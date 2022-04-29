@@ -13,8 +13,8 @@ import {
   Typography,
 } from "@mui/material";
 import DoubleArrowIcon from "@mui/icons-material/DoubleArrow";
-import img from "../images/ps.jpg";
-import placeholderImg from "../images/bg1.jpg";
+import img from "../images/dp.png";
+import placeholderImg from "../images/imgadd.png";
 import { Link,useParams } from "react-router-dom";
 import axios from "../api/secureApi";
 const UserPosts = () => {
@@ -110,18 +110,20 @@ const UserPosts = () => {
                   return (
                     <Grid key={post._id} item xs={6} md={4}>
                       <Box>
-                           <Link className="normalLink" to={`/post_details/${post._id}`}>
-                        <img
-                          style={{
-                            width: "100%",
-                            height: "auto",
-                            borderRadius: 4,
-                          }}
-                          src={post.images[0] || placeholderImg}
-                          alt="post image"
-                        />
-
-                           </Link>
+                        <Link
+                          className="normalLink"
+                          to={`/post_details/${post._id}`}
+                        >
+                          <img
+                            style={{
+                              width: "100%",
+                              height: "auto",
+                              borderRadius: 4,
+                            }}
+                            src={post.images[0].image || placeholderImg}
+                            alt="post image"
+                          />
+                        </Link>
                       </Box>
                     </Grid>
                   );

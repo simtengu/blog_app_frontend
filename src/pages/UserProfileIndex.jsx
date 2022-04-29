@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { AddCircle, Close, Done, ShoppingBag, Star } from "@mui/icons-material";
+import React, { useEffect, useRef, useState } from "react";
+import { AddCircle, Close, Done } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -12,11 +12,10 @@ import {
 } from "@mui/material";
 import DoubleArrowIcon from "@mui/icons-material/DoubleArrow";
 import { DeleteOutline, Edit } from "@mui/icons-material";
-import img from "../images/ps.jpg";
-import placeholderImg from "../images/bg1.jpg";
+import img from "../images/dp.png";
+import placeholderImg from "../images/imgadd.png";
 import { useNavigate } from "react-router-dom";
 import axios from "../api/secureApi";
-import BackDrop from "../components/displayComponents/BackDrop";
 import { useGlobalInfo } from "../components/AppContext";
 import SnackBar from "../components/displayComponents/SnackBar";
 const UserProfileIndex = () => {
@@ -26,7 +25,6 @@ const UserProfileIndex = () => {
     handleOpenSnackbar,
     handleOpenBackdrop,
     handleCloseBackdrop,
-    handleSetAuthUser,
     handleSetUserPosts,
     posts,
     authUser,
@@ -69,26 +67,30 @@ const UserProfileIndex = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedProductId, setSelectedProduct] = useState("");
+  const [isDeletingPost,setIsDeletingPost] = useState(false)
 
   const handleProductDelete = async () => {
     try {
       setIsLoading(true);
+      setIsDeletingPost(true)
       const rs = await axios.delete(`/post/${selectedProductId}`);
+      setIsDeletingPost(false)
       setIsDialogOpen(false);
       if (rs.status === 200) {
         let newPostsList = userPosts.filter(
           (post) => post._id !== selectedProductId
-        );
-        setUserPosts(newPostsList);
-        handleOpenSnackbar(
-          3000,
-          "success",
-          "The post was deleted successfully"
-        );
-      }
-      setIsLoading(false);
-      setSelectedProduct("");
-    } catch (error) {
+          );
+          setUserPosts(newPostsList);
+          handleOpenSnackbar(
+            3000,
+            "success",
+            "The post was deleted successfully"
+            );
+          }
+          setIsLoading(false);
+          setSelectedProduct("");
+        } catch (error) {
+      setIsDeletingPost(false)
       setSelectedProduct("");
       setIsLoading(false);
     }
@@ -104,22 +106,17 @@ const UserProfileIndex = () => {
     setIsDialogOpen(false);
   };
 
-  // if (isBackdropOpen) {
-  //   return (
-  //     <Box
-  //       sx={{
-  //         minWidth: "100vw",
-  //         minHeight: "60vh",
-  //         display: "flex",
-  //         alignItems: "center",
-  //         justifyContent: "center",
-  //       }}
-  //     >
+  const postActionsRef = useRef();
+  const handleShowActions = ()=>{
+    postActionsRef.current.style.display = "block"
+  }
+  
+  const handleHideActions = ()=>{
+   
+    postActionsRef.current.style.display = "none"
 
-  //       <BackDrop />
-  //     </Box>
-  //   );
-  // }
+  }
+
   return (
     <>
       <SnackBar />
@@ -161,6 +158,7 @@ const UserProfileIndex = () => {
               <Done />{" "}
             </IconButton>
           </Stack>
+          {isDeletingPost && <center>deleting post.....</center>}
         </Dialog>
       </div>
       {/* end of delete post dialog................................... */}
@@ -223,22 +221,25 @@ const UserProfileIndex = () => {
             </Button>
           </Box>
           {userPosts.length > 0 ? (
-            <Box>
+            <Box sx={{p:2}}>
               <Grid container columnSpacing={1} rowSpacing={1}>
                 {userPosts.map((post) => {
                   return (
                     <Grid key={post._id} item xs={6} md={4}>
                       <Box id="indexProduct">
                         <img
+                        // onClick={handleShowActions}
+                        // onMouseEnter={handleShowActions}
+                        // onMouseLeave={handleHideActions}
                           style={{
                             width: "100%",
                             height: "auto",
                             borderRadius: 4,
                           }}
-                          src={post.images[0] || placeholderImg}
+                          src={post.images[0].image || placeholderImg}
                           alt="post image"
                         />
-                        <Box id="indexProductActions">
+                        <Box ref={postActionsRef} id="indexProductActions">
                           <Stack direction="row">
                             {" "}
                             <IconButton

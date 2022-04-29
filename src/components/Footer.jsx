@@ -22,7 +22,7 @@ const Footer = () => {
                   Important Links
                 </Typography>
                 <ul>
-                  <li>Home</li>
+                  <li> <Link className="normalLink" to="/">Home</Link> </li>
                   <li>about us</li>
                   <li>profile</li>
                   <li>services</li>

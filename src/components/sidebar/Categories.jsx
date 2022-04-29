@@ -14,7 +14,7 @@ export default function Categories() {
   const navigate = useNavigate();
   return (
     <Box sx={{ my: 4 }}>
-      <Paper>
+      
         <Box sx={{ p: 1 }}>
           <Typography
             variant="h5"
@@ -45,42 +45,47 @@ export default function Categories() {
                       <ListItemText primary={category.name} />
                     </ListItemButton>
                   </ListItem>
+                      <Divider />
                 </div>
               );
             })}
           </List>
         </nav>
-      </Paper>
+      
 
-      <Paper sx={{ mt: 4, mb: 2 }}>
-        <Box id="tagsDiv">
-          <Box sx={{ p: 1 }}>
-            <Typography
-              variant="h5"
-              sx={{
-                fontWeight: "bold",
-                color: "#378fb5",
-                py: 1,
-                fontFamily: "roboto",
-              }}
-            >
-              Post Tags
-            </Typography>
-          </Box>
-          <div id="tags">
-            {tags.map((tag) => {
-              return (
-                <Button
-                  key={tag}
-                  onClick={() => navigate(`/posts/filtered?tag=${tag}`)}
-                >
-                  {tag}
-                </Button>
-              );
-            })}
-          </div>
+      <Box id="tagsDiv" sx={{mt:2}}>
+        <Box sx={{ p: 1 }}>
+          <Typography
+            variant="h5"
+            sx={{
+              fontWeight: "bold",
+              color: "#378fb5",
+              py: 1,
+              fontFamily: "roboto",
+            }}
+          >
+            Post Tags
+          </Typography>
         </Box>
-      </Paper>
+        <div id="tags">
+          {tags.map((tag) => {
+            return (
+              <Button
+                key={tag}
+                variant="text"
+                sx={{
+                  color: "#4b4b4b !important",fontWeight:"bold",
+                  "&:hover": { bgcolor: "#378fb5", color: "white !important" },
+                  textTransform: "capitalize",
+                }}
+                onClick={() => navigate(`/posts/filtered?tag=${tag}`)}
+              >
+                {tag}
+              </Button>
+            );
+          })}
+        </div>
+      </Box>
     </Box>
   );
 }

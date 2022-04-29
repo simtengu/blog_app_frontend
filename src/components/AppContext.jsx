@@ -1,5 +1,4 @@
 import React, { useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import api from "../api"
 const contextInit = React.createContext();
 const AppContext = ({ children }) => {
@@ -97,7 +96,22 @@ const AppContext = ({ children }) => {
   }
 
   //end of posts section....................
+
+  //post search section ......................
+  const [isSearchDivActive,setIsSearchDivActive] = useState(false)
+  const handleOpenSearchDiv = ()=>{
+    setIsSearchDivActive(true)
+  }
+
+  const handleCloseSearchDiv = ()=>{
+   setIsSearchDivActive(false)
+  }
+  //post search section ......................
+
   const globalData = {
+    isSearchDivActive,
+    handleOpenSearchDiv,
+    handleCloseSearchDiv,
     isLoginOpen,
     activateLoginSection,
     activateRegisterSection,

@@ -15,7 +15,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import img from "../images/ps.jpg";
+import img from "../images/dp.png";
 import { useGlobalInfo } from "../components/AppContext";
 import SnackBar from "../components/displayComponents/SnackBar";
 import axios from "../api/secureApi";
@@ -25,8 +25,6 @@ const UpdateProfile = () => {
     authUser,
     handleOpenSnackbar,
     handleSetAuthUser,
-    handleOpenBackdrop,
-    handleCloseBackdrop,
     handleCloseSnackbar,
   } = useGlobalInfo();
   //end of app context(global data)
@@ -93,7 +91,7 @@ const UpdateProfile = () => {
           type: "setUser",
           payload: rsData.user,
         });
-        console.log(userInfo);
+        
         handleOpenSnackbar(3000, "success", "Image updated successfully");
       }
 
@@ -296,10 +294,13 @@ const UpdateProfile = () => {
             <Box>
               <Grid container>
                 <Grid item xs={12} sm={3} md={4}>
+                  <Box sx={{width:{xs:"60%",md:"92%"}}}>
                   <img
-                    style={{ height: "auto", width: "92%", borderRadius: 10 }}
+                    style={{ height: "auto", width: "100%", borderRadius: 10 }}
                     src={displayImg ? displayImg : img}
                   />
+
+                  </Box>
                   <input
                     style={{ display: "none" }}
                     ref={imgRef}

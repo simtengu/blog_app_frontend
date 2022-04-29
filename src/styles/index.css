@@ -122,4 +122,34 @@ code {
 .footer .links ul li {
   margin-top: 10px;
 }
+
+.searchResult {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.searchResult img {
+  max-width: 20%;
+}
+
+.searchInput {
+  min-width: 100%;
+  border: 0px;
+  font-size: 18px;
+}
+
+.searchDivContainer {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  background-color: rgba(23, 128, 226, 0.3);
+  z-index: 122;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+}
 /*# sourceMappingURL=index.css.map */

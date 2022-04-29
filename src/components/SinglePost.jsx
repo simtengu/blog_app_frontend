@@ -17,7 +17,7 @@ import {
   ThumbUpAltOutlined,
   ThumbUp,
 } from "@mui/icons-material";
-import img from "../images/bg1.jpg";
+import img from "../images/dp.png";
 import { Link,useNavigate } from "react-router-dom";
 import { useGlobalInfo } from "./AppContext";
 import axios from "../api/secureApi"
@@ -84,7 +84,7 @@ export default function SinglePost({post:item}) {
           <CardMedia
             component="img"
             height="300"
-            image={images[0]}
+            image={images[0].image}
             alt="green iguana"
           />
           <CardContent sx={{ mb: 0, pb: 0 }}>

@@ -1,5 +1,4 @@
 import * as React from "react";
-import MenuIcon from "@mui/icons-material/Menu";
 
 //scroll to top imports....................
 import useScrollTrigger from "@mui/material/useScrollTrigger";
@@ -9,21 +8,14 @@ import Zoom from "@mui/material/Zoom";
 import { Link, useNavigate } from "react-router-dom";
 import {
   AccountCircle,
-  Mail,
-  Phone,
   Search,
-  ShoppingCart,
-  StarBorder,
 } from "@mui/icons-material";
 import {
-  Badge,
-  Grid,
+
   InputBase,
-  Stack,
-  MenuItem,
+
   Button,
-  Container,
-  Menu,
+  
   Typography,
   IconButton,
   Toolbar,
@@ -31,15 +23,16 @@ import {
   AppBar,
   List,
   ListItem,
-  Paper
+  Paper,
 } from "@mui/material";
 import secureApi from "../api/secureApi";
 import { useGlobalInfo } from "./AppContext";
+import ProductsSearch from "./ProductSearch";
 
 //end of scroll to top
 //scroll to top component.......................................
 function ScrollTop(props) {
-  const { children, window } = props;
+  const { children } = props;
   const trigger = useScrollTrigger({
     disableHysteresis: true,
     threshold: 100,
@@ -79,6 +72,7 @@ const ResponsiveAppBar = (props) => {
   const navigate = useNavigate();
   //menu section ...........................
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const menuRef = React.useRef();
 
   const handleClose = () => {
     setIsMenuOpen(false);
@@ -90,8 +84,8 @@ const ResponsiveAppBar = (props) => {
     activateRegisterSection,
     authUser,
     handleSetAuthUser,
-    handleOpenBackdrop,
-    handleCloseBackdrop,
+    isSearchDivActive,
+    handleOpenSearchDiv,
   } = useGlobalInfo();
 
   const handleLogOut = () => {
@@ -105,31 +99,47 @@ const ResponsiveAppBar = (props) => {
     if (token) {
       if (!authUser) {
         const fetchAuthUser = async () => {
-          const response = await secureApi.get("/user");
-          const { user } = response.data;
-          if (user) {
-            handleSetAuthUser(user);
+          try {
+            const response = await secureApi.get("/user");
+            const { user } = response.data;
+            if (user) {
+              handleSetAuthUser(user);
+            }
+
+          } catch (error) {
+            console.log(error);
+            localStorage.removeItem("blog_app_token");
           }
         };
-        try {
-          fetchAuthUser();
-        } catch (error) {
-          console.log(error);
-          localStorage.removeItem("blog_app_token");
-        }
+        fetchAuthUser();
       }
     }
   }, []);
+
+  React.useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setIsMenuOpen(false)
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [menuRef]);
+
+
   return (
     <>
+      {isSearchDivActive && <ProductsSearch />}
       <AppBar sx={{ backgroundColor: "#343a40" }} position="static">
-        <Container>
+        <Box sx={{ px: { md: 3 } }}>
           <Toolbar
             id="back-to-top-anchor"
             sx={{ display: "flex", flexFlow: 1 }}
           >
             <Box sx={{ display: "flex", flexGrow: 1 }}>
-              <Link style={{textDecoration:"none"}} to="/" id="logo">
+              <Link style={{ textDecoration: "none" }} to="/" id="logo">
                 <Typography
                   variant="h5"
                   component="div"
@@ -141,8 +151,13 @@ const ResponsiveAppBar = (props) => {
             </Box>
 
             <Box>
-              <Box sx={{ display: { xs: "inline", sm: "none" }, mr: 1 }}>
-                <IconButton style={{ color: "white" }}>
+              <Box
+                sx={{ display: { xs: "inline", sm: "none" }, mr: { md: 1 } }}
+              >
+                <IconButton
+                  onClick={() => handleOpenSearchDiv()}
+                  style={{ color: "white" }}
+                >
                   <Search />
                 </IconButton>
               </Box>
@@ -162,42 +177,74 @@ const ResponsiveAppBar = (props) => {
                   variant="standard"
                   placeholder="search..."
                   sx={{ color: "whitesmoke", width: { xs: 50, md: 250 } }}
+                  onFocus={() => handleOpenSearchDiv()}
                 />
               </Box>
 
               {authUser ? (
-                <div style={{ display: "inline", marginLeft: 4,position:"relative" }}>
+                <div
+                  style={{
+                    display: "inline",
+                    marginLeft: 4,
+                    position: "relative",
+                  }}
+                >
                   <IconButton
                     sx={{ mx: 1 }}
-                    onClick={(e)=>{e.stopPropagation(); setIsMenuOpen(!isMenuOpen)}}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsMenuOpen(!isMenuOpen);
+                    }}
                     color="inherit"
                   >
                     <AccountCircle />
                   </IconButton>
-                  {isMenuOpen &&  <Paper sx={{p:1,width:180,position:"absolute",top:"30px",right:"17px",zIndex:120}}>
-                  <List>
-                    <ListItem sx={{"&:hover":{bgcolor:"#dcdce2"},cursor:"pointer"}}
-                      onClick={() => {
-                        navigate(`/user_account/index`);
-                        setIsMenuOpen(false)
-                       
+                  {isMenuOpen && (
+                    <Paper
+                      sx={{
+                        p: 1,
+                        width: 180,
+                        position: "absolute",
+                        top: "30px",
+                        right: "17px",
+                        zIndex: 120,
                       }}
+                      ref={menuRef}
                     >
-                      My account
-                    </ListItem>
-                    <ListItem sx={{"&:hover":{bgcolor:"#dcdce2"},cursor:"pointer"}} onClick={handleLogOut}>Logout</ListItem>
-                  </List>
-                  </Paper>}
-                 
+                      <List>
+                        <ListItem
+                          sx={{
+                            "&:hover": { bgcolor: "#dcdce2" },
+                            cursor: "pointer",
+                          }}
+                          onClick={() => {
+                            navigate(`/user_account/index`);
+                            setIsMenuOpen(false);
+                          }}
+                        >
+                          My account
+                        </ListItem>
+                        <ListItem
+                          sx={{
+                            "&:hover": { bgcolor: "#dcdce2" },
+                            cursor: "pointer",
+                          }}
+                          onClick={handleLogOut}
+                        >
+                          Logout
+                        </ListItem>
+                      </List>
+                    </Paper>
+                  )}
                 </div>
               ) : (
                 <div style={{ display: "inline" }}>
                   <Button
                     sx={{
-                      mx: 1,
+                      mx: { md: 1 },
                       color: "#1976d2",
                       textTransform: "lowercase",
-                      fontSize: 16,
+                      fontSize: { xs: 13, sm: 16 },
                     }}
                     size="small"
                     variant="text"
@@ -210,10 +257,10 @@ const ResponsiveAppBar = (props) => {
                   </Button>
                   <Button
                     sx={{
-                      mx: 1,
+                      mx: { md: 1 },
                       color: "#1976d2",
                       textTransform: "lowercase",
-                      fontSize: 16,
+                      fontSize: { xs: 13, sm: 16 },
                     }}
                     size="small"
                     variant="text"
@@ -228,7 +275,7 @@ const ResponsiveAppBar = (props) => {
               )}
             </Box>
           </Toolbar>
-        </Container>
+        </Box>
       </AppBar>
 
       <ScrollTop {...props}>

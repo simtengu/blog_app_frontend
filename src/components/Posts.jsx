@@ -1,7 +1,6 @@
 import React,{ useEffect,useState } from "react";
 import { Backdrop, Box, CircularProgress, Container, Grid } from "@mui/material";
 import SinglePost from "./SinglePost";
-import img1 from "../images/bg.jpg";
 import api from "../api"
 const Posts = () => {
   const [posts,setPosts] = useState([])

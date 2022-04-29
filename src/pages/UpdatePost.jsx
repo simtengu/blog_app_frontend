@@ -15,10 +15,9 @@ import {
   Backdrop,
   CircularProgress
 } from "@mui/material";
-import img from "../images/ps.jpg";
+import img from "../images/imgadd.png";
 import { tags, categories } from "../resources/productData";
 import { useGlobalInfo } from "../components/AppContext";
-import BackDrop from "../components/displayComponents/BackDrop";
 import SnackBar from "../components/displayComponents/SnackBar";
 import axios from "../api/secureApi";
 import api from "../api";
@@ -30,11 +29,8 @@ const UpdatePost = () => {
   //app context(global data)
   const {
     handleOpenSnackbar,
-    handleOpenBackdrop,
-    handleCloseBackdrop,
     handleCloseSnackbar,
   
-    
   } = useGlobalInfo();
   //end of global data
 
@@ -110,9 +106,9 @@ const UpdatePost = () => {
       });
       if (rs.status === 200) {
         let responseData = await rs.data;
-        let imgPath = responseData.path;
+        let rsImage = responseData.image;
 
-        let newPostImagesList = postImages.concat([imgPath]);
+        let newPostImagesList = postImages.concat([rsImage]);
         setPostImages(newPostImagesList);
         handleOpenSnackbar(3000, "success", "Image uploaded successfully");
       }
@@ -135,11 +131,11 @@ const UpdatePost = () => {
     const img = e.target.value;
     try {
       let rs = await axios.patch(`/post/image_delete/${postId}`, {
-        image: img,
+        image_id: img,
       });
 
       if (rs.status === 200) {
-        let newImgsList = postImages.filter((image) => image !== img);
+        let newImgsList = postImages.filter((image) => image.image_id !== img);
         setPostImages(newImgsList);
         handleOpenSnackbar(3000, "success", "image deleted successfully");
       }
@@ -312,12 +308,12 @@ const UpdatePost = () => {
                     <Grid key={index} item xs={6} sm={4} sx={{ my: 1 }}>
                       {" "}
                       <img
-                        src={img}
+                        src={img.image}
                         style={{ width: "100%", height: "auto" }}
                         alt="post img"
                       />{" "}
                       <Button
-                        value={img}
+                        value={img.image_id}
                         onClick={handleImageDelete}
                         variant="text"
                       >

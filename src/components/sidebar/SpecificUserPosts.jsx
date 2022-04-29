@@ -1,6 +1,6 @@
 import { Box, Card, Paper, Stack, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import img from "../../images/bg1.jpg";
+import img from "../../images/dp.png";
 import api from "../../api";
 import { Link } from "react-router-dom";
 const SpecificUserPosts = () => {
@@ -69,19 +69,6 @@ const SpecificUserPosts = () => {
               </Paper>
               </Link>
              
-             
-
-              // <Card key={user._id}>
-              //   <Box>
-              //     <img style={{width:70,height:"auto"}} src={user.picture || img} alt="pro" />
-              //   </Box>
-              //   <Box sx={{ p: 1 }}>
-              //     <Typography>{user.firstName}</Typography>
-              //     <Typography color="primary" variant="body2">
-              //       10 Posts
-              //     </Typography>
-              //   </Box>
-              // </Card>
             );
           })}
         </Box>

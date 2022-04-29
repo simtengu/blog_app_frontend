@@ -10,10 +10,12 @@ import UpdateProfile from "../pages/UpdateProfile";
 import UserPosts from "../pages/UserPosts";
 import UserProfileIndex from "../pages/UserProfileIndex";
 import Layout from "./Layout";
+import ScrollToTop from "./ScrollToTop";
 import Protected from "./user/Protected";
 const Navigation = () => {
   return (
     <>
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<Homepage />} />
         <Route element={<Layout />}>
