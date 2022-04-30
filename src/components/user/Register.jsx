@@ -1,5 +1,5 @@
 import { Box, Button, Grid, TextField, Typography } from "@mui/material";
-import React, { useReducer } from "react";
+import React, { useReducer,useEffect } from "react";
 import sign_up from "../../images/signup.png";
 import { useGlobalInfo } from "../AppContext";
 import BackDrop from "../displayComponents/BackDrop";
