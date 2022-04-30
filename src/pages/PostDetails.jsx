@@ -117,6 +117,7 @@ const PostDetails = () => {
   useEffect(() => {
     const fetchPost = async () => {
       try {
+        setIsLoading(true);
         const rs = await api.get(`/post/${postId}`);
         const rsData = rs.data;
         setIsLoading(false);
