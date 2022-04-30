@@ -1,4 +1,9 @@
-import { Comment, Send, ThumbUp, ThumbUpAltOutlined } from "@mui/icons-material";
+import {
+  Comment,
+  Send,
+  ThumbUp,
+  ThumbUpAltOutlined,
+} from "@mui/icons-material";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
 import {
   Box,
@@ -34,7 +39,6 @@ const flickityOptions = {
   friction: 0.8,
 };
 
-
 //for tabs.................................................
 const PostDetails = () => {
   const { authUser, setTrendingPosts } = useGlobalInfo();
@@ -52,7 +56,10 @@ const PostDetails = () => {
       console.log("you have not typed anything..");
       return;
     }
-
+    if (!authUser) {
+      alert("login first");
+      return;
+    }
     const comment = {
       date: new Date(),
       owner: authUser.picture,
@@ -76,6 +83,11 @@ const PostDetails = () => {
 
   //post like..............
   const handlePostLike = async () => {
+    if (!authUser) {
+      alert("login first");
+      return;
+    }
+
     if (post.likes.some((like) => like.owner_id === authUser._id)) {
       console.log("you can like a post twice");
       return;
@@ -110,7 +122,7 @@ const PostDetails = () => {
         setIsLoading(false);
         if (rs.status === 200) {
           setPost(rsData.post);
-          setRelatedPost(rsData.relatedPosts)
+          setRelatedPost(rsData.relatedPosts);
         }
       } catch (error) {
         setIsLoading(false);
@@ -128,7 +140,7 @@ const PostDetails = () => {
         const rs = await axios.get(`/post/update_trending/${postId}`);
         if (rs.status === 200) {
           const rsData = await rs.data;
-          setTrendingPosts(rsData.posts)
+          setTrendingPosts(rsData.posts);
         }
       } catch (error) {
         console.log(error);
@@ -136,7 +148,6 @@ const PostDetails = () => {
     };
     updateTrendingPosts();
   }, [postId]);
-  
 
   if (isLoading) {
     return (
@@ -252,7 +263,6 @@ const PostDetails = () => {
               <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                 <InputBase
                   placeholder="Enter your comment"
-                  autoFocus
                   style={{ flexGrow: 1 }}
                   value={newComment}
                   onChange={(e) => setNewComment(e.target.value)}
