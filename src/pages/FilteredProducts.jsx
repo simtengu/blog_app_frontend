@@ -42,7 +42,8 @@ const FilteredPosts = () => {
         console.log(error);
       }
     };
-
+    
+    window.scrollTo(0, 0);
     fetchPosts();
   }, [searchParams]);
 
