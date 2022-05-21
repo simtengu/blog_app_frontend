@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { AddCircle, Close, Done, ShoppingBag, Star } from "@mui/icons-material";
 import {
-    Backdrop,
+  Backdrop,
   Box,
   Button,
   CircularProgress,
@@ -15,13 +15,13 @@ import {
 import DoubleArrowIcon from "@mui/icons-material/DoubleArrow";
 import img from "../images/dp.png";
 import placeholderImg from "../images/imgadd.png";
-import { Link,useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import axios from "../api/secureApi";
 const UserPosts = () => {
- const {userId} = useParams()
+  const { userId } = useParams();
   const [userPosts, setUserPosts] = useState([]);
   const [user, setUser] = useState({});
-  const [isLoading,setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchUserPosts = async () => {
@@ -33,35 +33,32 @@ const UserPosts = () => {
         if (rs.status === 200) {
           setUserPosts(rsData.posts);
           setUser(rsData.user);
-        
         }
       } catch (error) {
         setIsLoading(false);
         let error_message = error.response
           ? error.response.data.message
           : error.message;
-       console.log(error_message)
+        console.log(error_message);
       }
     };
 
-    fetchUserPosts()
- 
+    fetchUserPosts();
   }, [userId]);
 
-
-    if (isLoading) {
-      return (
-        <Box sx={{ width: "100vw", minHeight: "60vh" }}>
-          <Backdrop
-            sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-            open={isLoading}
-            onClick={() => setIsLoading(false)}
-          >
-            <CircularProgress color="inherit" />
-          </Backdrop>
-        </Box>
-      );
-    }
+  if (isLoading) {
+    return (
+      <Box sx={{ width: "100vw", minHeight: "60vh" }}>
+        <Backdrop
+          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={isLoading}
+          onClick={() => setIsLoading(false)}
+        >
+          <CircularProgress color="inherit" />
+        </Backdrop>
+      </Box>
+    );
+  }
 
   return (
     <>
@@ -89,7 +86,7 @@ const UserPosts = () => {
                 sx={{ color: "#78756f", mt: 1, fontWeight: "bold" }}
                 gutterBottom
               >
-                {`${userPosts.length} Post${userPosts.length > 1 ? "s":""}`}
+                {`${userPosts.length} Post${userPosts.length > 1 ? "s" : ""}`}
               </Typography>
             </Box>
           </Box>
@@ -133,7 +130,7 @@ const UserPosts = () => {
           ) : (
             <Box>
               <center>
-                <h4>You have no posts.</h4>
+                <h4>No posts yet from this user.</h4>
               </center>
             </Box>
           )}

@@ -27,6 +27,7 @@ import api from "../api";
 import axios from "../api/secureApi";
 import Flickity from "react-flickity-component";
 import { useGlobalInfo } from "../components/AppContext";
+import dp from "../images/dp.png";
 
 const flickityOptions = {
   autoPlay: false,
@@ -335,7 +336,7 @@ const PostDetails = () => {
                       >
                         <img
                           style={{ width: 30, height: 30, borderRadius: "50%" }}
-                          src={like.owner}
+                          src={like.owner || dp}
                           alt="profile picture"
                         />
                         <Link
