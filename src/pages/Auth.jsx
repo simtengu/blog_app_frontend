@@ -9,8 +9,9 @@ import Register from "../components/user/Register";
 const Auth = () => {
   const navigate = useNavigate();
   //appcontext.......
-  const { isLoginOpen, isBackdropOpen, authUser } = useGlobalInfo();
+  const { isLoginOpen, isBackdropOpen, authUser,handleCloseBackdrop } = useGlobalInfo();
   useEffect(() => {
+    handleCloseBackdrop()
     if (authUser) {
       navigate("/",{replace:true});
     }

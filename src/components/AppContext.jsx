@@ -51,7 +51,7 @@ const AppContext = ({ children }) => {
   };
   //end of snackbar section ................
   //backdrop section ......
-  const [isBackdropOpen, setIsBackdropOpen] = useState(false);
+  const [isBackdropOpen, setIsBackdropOpen] = useState(true);
   const handleOpenBackdrop = () => {
     setIsBackdropOpen(true);
   };

@@ -160,7 +160,20 @@ const NewPost = () => {
       return;
     }
 
-    if(newPostInfo.body.length < 200){
+    //post title validation.................................
+    if (newPostInfo.title.length < 70) {
+      handleOpenSnackbar(
+        5000,
+        "warning",
+        "Please make sure title of the post is atleast 70 characters long."
+      );
+      return;
+    }
+
+
+
+    //post body validation.................................
+    if(newPostInfo.body.length < 300){
           handleOpenSnackbar(
             5000,
             "warning",
@@ -295,6 +308,18 @@ const NewPost = () => {
                   Create new Post
                 </Typography>
                 <div>
+                  {newPostInfo.title && (
+                    <Stack direction="row" justifyContent="flex-end">
+                      <Typography
+                        variant="body2"
+                        sx={{ position: "relative", top: 14 }}
+                      >
+                        {`${newPostInfo.title.length}/70 character${
+                          newPostInfo.title.length > 1 ? "s" : ""
+                        }`}
+                      </Typography>
+                    </Stack>
+                  )}
                   <TextField
                     label="Post Title"
                     id="title"
@@ -349,11 +374,14 @@ const NewPost = () => {
                   </div>
                 </div>
 
-                <div style={{marginTop:14}}>
+                <div style={{ marginTop: 14 }}>
                   {newPostInfo.body && (
                     <Stack direction="row" justifyContent="flex-end">
-                      <Typography variant="body2" sx={{position:"relative",top:14}}>
-                        {`${newPostInfo.body.length} character${
+                      <Typography
+                        variant="body2"
+                        sx={{ position: "relative", top: 14 }}
+                      >
+                        {`${newPostInfo.body.length}/300 character${
                           newPostInfo.body.length > 1 ? "s" : ""
                         }`}
                       </Typography>

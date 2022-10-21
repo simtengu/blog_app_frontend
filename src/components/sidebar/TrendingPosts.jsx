@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Box, CardMedia, Grid, Paper, Typography } from "@mui/material";
 import { useGlobalInfo } from "../AppContext";
+import SidebarHeader from "./SidebarHeader";
 const TrendingItems = () => {
   const {
     authUser,
@@ -21,18 +22,14 @@ const TrendingItems = () => {
   return (
     <>
       <Box sx={{ my: 4 }}>
-        <Typography
-          variant="h5"
-          sx={{ fontWeight: "bold", color: "#378fb5", fontFamily: "roboto" }}
-          gutterBottom
-        >
-          Popular Posts
-        </Typography>
+      
+        <SidebarHeader title="Popular Posts" />
+
         {posts.map((post) => {
           return (
-            <Box key={post._id} sx={{ my: 1 }}>
+            <Box key={post._id} sx={{ my: 1.4 }}>
               <Link className="normalLink" to={`/post_details/${post._id}`}>
-                <Paper elevation={1}>
+                <Paper elevation={0}>
                   <Grid container>
                     <Grid item xs={4}>
                       <CardMedia
@@ -42,18 +39,18 @@ const TrendingItems = () => {
                         alt="trending img"
                       />
                     </Grid>
-                    
+
                     <Grid item xs={8}>
-                      <Box sx={{ p: 0.5 }}>
+                      <Box sx={{ py: 0.5, px: 1 }}>
                         <Typography
                           variant="body1"
-                          sx={{ fontWeight: "bold" }}
+                          sx={{
+                            fontWeight: "bold",
+                            fontFamily: "'Roboto Slab', serif",
+                          }}
                           gutterBottom
                         >
-                          {post.title.substring(0, 29)}..
-                        </Typography>
-                        <Typography variant="body">
-                          {post.body.substring(0, 64)}
+                          {post.title.substring(0, 40)}..
                         </Typography>
                       </Box>
                     </Grid>

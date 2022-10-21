@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import {
   Comment,
   Send,
@@ -13,13 +14,14 @@ import {
   Stack,
   Typography,
   Tab,
-  Paper,
   Divider,
   Grid,
-  Backdrop,
-  CircularProgress,
+  Container,
+  Card,
+  CardContent,
+  CardHeader,
+  Skeleton,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import DoubleArrowIcon from "@mui/icons-material/DoubleArrow";
 import SinglePost from "../components/SinglePost";
@@ -153,15 +155,80 @@ const PostDetails = () => {
 
   if (isLoading) {
     return (
-      <Box sx={{ width: "100vw", minHeight: "60vh" }}>
-        <Backdrop
-          sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-          open={isLoading}
-          onClick={() => setIsLoading(false)}
-        >
-          <CircularProgress color="inherit" />
-        </Backdrop>
-      </Box>
+      <Container>
+        <Grid container columnSpacing={1} rowSpacing={1} sx={{ mt: 3 }}>
+          <Grid item xs={12} mb={3}>
+            <Skeleton
+              width="90%"
+              animation="wave"
+              variant="text"
+              sx={{ mb: 1 }}
+            />
+            <Skeleton animation="wave" variant="text" sx={{ mb: 1 }} />
+            <Skeleton
+              width="95%"
+              animation="wave"
+              variant="text"
+              sx={{ mb: 1 }}
+            />
+          </Grid>
+          <Grid item xs={12} mb={3}>
+            <Skeleton
+              sx={{ height: 250 }}
+              animation="wave"
+              variant="rectangular"
+            />
+            <Box mt={3}>
+              <Skeleton animation="wave" variant="text" sx={{ mb: 1 }} />
+              <Skeleton animation="wave" variant="text" sx={{ mb: 1 }} />
+              <Skeleton animation="wave" variant="text" sx={{ mb: 1 }} />
+            </Box>
+          </Grid>
+          {[1, 2, 3, 4, 5, 6].map((post) => (
+            <Grid key={post} item xs={12} md={6}>
+              <Card sx={{ width: "100%", m: 2 }}>
+                <CardHeader
+                  avatar={
+                    <Skeleton
+                      animation="wave"
+                      variant="circular"
+                      width={40}
+                      height={40}
+                    />
+                  }
+                  action=""
+                  title={
+                    <Skeleton
+                      animation="wave"
+                      height={10}
+                      width="80%"
+                      style={{ marginBottom: 6 }}
+                    />
+                  }
+                  subheader={
+                    <Skeleton animation="wave" height={10} width="40%" />
+                  }
+                />
+
+                <Skeleton
+                  sx={{ height: 190 }}
+                  animation="wave"
+                  variant="rectangular"
+                />
+
+                <CardContent>
+                  <Skeleton
+                    animation="wave"
+                    height={10}
+                    style={{ marginBottom: 6 }}
+                  />
+                  <Skeleton animation="wave" height={10} width="80%" />
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      </Container>
     );
   }
 
@@ -174,8 +241,8 @@ const PostDetails = () => {
             fontWeight: "bold",
             mb: 2,
             color: "#464c51",
-            fontFamily: "roboto",
-            fontSize: { xs: "2rem", sm: "2.2", md: "2.5rem", lg: "3rem" },
+            fontFamily: "'Roboto Slab', serif",
+            fontSize: { xs: "2rem", sm: "2.2", md: "2.5rem", lg: "2.7rem" },
           }}
           gutterBottom
         >
@@ -202,7 +269,11 @@ const PostDetails = () => {
                       key={index}
                       src={img.image}
                       alt="post image"
-                      style={{ width: "100%", height: "auto", marginBottom: 2 }}
+                      style={{
+                        width: "100%",
+                        height: "auto",
+                        marginBottom: 2,
+                      }}
                     />
                   );
                 })}
@@ -335,7 +406,11 @@ const PostDetails = () => {
                         sx={{ my: 1 }}
                       >
                         <img
-                          style={{ width: 30, height: 30, borderRadius: "50%" }}
+                          style={{
+                            width: 30,
+                            height: 30,
+                            borderRadius: "50%",
+                          }}
                           src={like.owner || dp}
                           alt="profile picture"
                         />

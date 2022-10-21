@@ -195,25 +195,43 @@ const UpdatePost = () => {
       return;
     }
 
+    //post title validation.................................
+    if (newPostInfo.title.length < 70) {
+      handleOpenSnackbar(
+        5000,
+        "warning",
+        "Please make sure title of the post is atleast 70 characters long."
+      );
+      return;
+    }
+
+    //post body validation.................................
+    if (newPostInfo.body.length < 300) {
+      handleOpenSnackbar(
+        5000,
+        "warning",
+        "Please make sure body of the post is atleast 200 characters long."
+      );
+      return;
+    }
+
     let postData = {
       ...newPostInfo,
       tags: postTags,
       images: postImages,
     };
 
-    console.log(postData);
     //submitting the post.........
     try {
-      setLoading(true)
+      setLoading(true);
       const rs = await axios.patch(`/post/${postId}`, postData);
       setLoading(false);
       handleOpenSnackbar(3000, "success", "Product was successfully updated.");
-
     } catch (error) {
       let error_message = error.response
         ? error.response.data.message
         : error.message;
-    setLoading(false)
+      setLoading(false);
       handleOpenSnackbar(10000, "error", error_message);
     }
   };
@@ -340,6 +358,18 @@ const UpdatePost = () => {
                   Update The Post
                 </Typography>
                 <div>
+                  {newPostInfo.title && (
+                    <Stack direction="row" justifyContent="flex-end">
+                      <Typography
+                        variant="body2"
+                        sx={{ position: "relative", top: 14 }}
+                      >
+                        {`${newPostInfo.title.length}/70 character${
+                          newPostInfo.title.length > 1 ? "s" : ""
+                        }`}
+                      </Typography>
+                    </Stack>
+                  )}
                   <TextField
                     label="Post Title"
                     id="title"
@@ -395,6 +425,18 @@ const UpdatePost = () => {
                 </div>
 
                 <div>
+                  {newPostInfo.body && (
+                    <Stack direction="row" justifyContent="flex-end">
+                      <Typography
+                        variant="body2"
+                        sx={{ position: "relative", top: 14 }}
+                      >
+                        {`${newPostInfo.body.length}/300 character${
+                          newPostInfo.body.length > 1 ? "s" : ""
+                        }`}
+                      </Typography>
+                    </Stack>
+                  )}
                   <TextField
                     label="Post Body"
                     multiline

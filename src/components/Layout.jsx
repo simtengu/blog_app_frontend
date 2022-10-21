@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Box, Grid } from '@mui/material';
+import { Box, Container, Grid } from '@mui/material';
 import Categories from './sidebar/Categories';
 import SpecificUserPosts from './sidebar/SpecificUserPosts';
 import TrendingItems from './sidebar/TrendingPosts';
@@ -8,6 +8,8 @@ import { Outlet } from 'react-router-dom';
 const Layout = () => {
     return (
       <>
+      <Container>
+
         <Grid container>
           <Grid item xs={12} md={8}>
             <Outlet />
@@ -25,6 +27,7 @@ const Layout = () => {
             </Box>
           </Grid>
         </Grid>
+      </Container>
       </>
     );
 }

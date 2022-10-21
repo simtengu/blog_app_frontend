@@ -6,16 +6,10 @@ import Fab from "@mui/material/Fab";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import Zoom from "@mui/material/Zoom";
 import { Link, useNavigate } from "react-router-dom";
+import { AccountCircle, Search } from "@mui/icons-material";
 import {
-  AccountCircle,
-  Search,
-} from "@mui/icons-material";
-import {
-
   InputBase,
-
   Button,
-  
   Typography,
   IconButton,
   Toolbar,
@@ -105,7 +99,6 @@ const ResponsiveAppBar = (props) => {
             if (user) {
               handleSetAuthUser(user);
             }
-
           } catch (error) {
             console.log(error);
             localStorage.removeItem("blog_app_token");
@@ -119,7 +112,7 @@ const ResponsiveAppBar = (props) => {
   React.useEffect(() => {
     const handleClickOutside = (e) => {
       if (menuRef.current && !menuRef.current.contains(e.target)) {
-        setIsMenuOpen(false)
+        setIsMenuOpen(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -127,7 +120,6 @@ const ResponsiveAppBar = (props) => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [menuRef]);
-
 
   return (
     <>
@@ -242,7 +234,9 @@ const ResponsiveAppBar = (props) => {
                   <Button
                     sx={{
                       mx: { md: 1 },
-                      color: "#1976d2",
+                      color: "#378fb5",
+                      "&:hover": { color: "#fff", bgcolor: "#378fb5" },
+                        fontFamily: "'Roboto Slab', serif",
                       textTransform: "lowercase",
                       fontSize: { xs: 13, sm: 16 },
                     }}
@@ -258,7 +252,9 @@ const ResponsiveAppBar = (props) => {
                   <Button
                     sx={{
                       mx: { md: 1 },
-                      color: "#1976d2",
+                      color: "#378fb5",
+                      "&:hover": { color: "#fff", bgcolor: "#378fb5" },
+                        fontFamily: "'Roboto Slab', serif",
                       textTransform: "lowercase",
                       fontSize: { xs: 13, sm: 16 },
                     }}

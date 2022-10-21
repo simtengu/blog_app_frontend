@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import img from "../../images/dp.png";
 import api from "../../api";
 import { Link } from "react-router-dom";
+import SidebarHeader from "./SidebarHeader";
 const SpecificUserPosts = () => {
   const [users, setUsers] = useState([]);
   useEffect(() => {
@@ -28,13 +29,9 @@ const SpecificUserPosts = () => {
   return (
     <>
       <Box sx={{ my: 4 }}>
-        <Typography
-          variant="h5"
-          sx={{ fontWeight: "bold", color: "#378fb5",fontFamily:"roboto" }}
-          gutterBottom
-        >
-          Registered Users
-        </Typography>
+ 
+        <SidebarHeader title="Registered Users" />
+
         <Box
           sx={{
             display: "flex",
@@ -45,30 +42,36 @@ const SpecificUserPosts = () => {
         >
           {users.map((user) => {
             return (
-              <Link key={user._id} to={`/user/posts/${user._id}`} className="normalLink">
-                 <Paper sx={{m:1,p:1,borderRadius:2}} >
-                 <Stack
-                
-                direction="row"
-                alignItems="center"
-                sx={{ my: 1, mr: 1 }}
+              <Link
+                key={user._id}
+                to={`/user/posts/${user._id}`}
+                className="normalLink"
               >
-                <img
-                  style={{ width: 30, height: 30, borderRadius: "50%" }}
-                  src={user.picture || img}
-                  alt="profile picture"
-                />
-                
-                  <Typography
-                    sx={{ ml: 1, color: "#2d2d2d", fontWeight: "bold" }}
+                <Paper elevation={0} sx={{ m: 1, p: 1, borderRadius: 2 }}>
+                  <Stack
+                    direction="row"
+                    alignItems="center"
+                    sx={{ my: 1, mr: 1 }}
                   >
-                    {`${user.firstName} ${user.lastName}`}
-                  </Typography>
-                
-              </Stack>
-              </Paper>
+                    <img
+                      style={{ width: 30, height: 30, borderRadius: "50%" }}
+                      src={user.picture || img}
+                      alt="profile picture"
+                    />
+
+                    <Typography
+                      sx={{
+                        ml: 1,
+                        color: "#2d2d2d",
+                        fontWeight: "bold",
+                        fontFamily: "'Roboto Slab', serif",
+                      }}
+                    >
+                      {`${user.firstName} ${user.lastName}`}
+                    </Typography>
+                  </Stack>
+                </Paper>
               </Link>
-             
             );
           })}
         </Box>

@@ -5,10 +5,10 @@ import {
   CardActions,
   CardContent,
   CardMedia,
-  Button,
-  Typography,
   Avatar,
   CardHeader,
+  Button,
+  Typography,
   IconButton,
 } from "@mui/material";
 import {
@@ -18,23 +18,23 @@ import {
   ThumbUp,
 } from "@mui/icons-material";
 import img from "../images/dp.png";
-import { Link,useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useGlobalInfo } from "./AppContext";
-import axios from "../api/secureApi"
-import SnackBar from "./displayComponents/SnackBar"
-export default function SinglePost({post:item}) {
-  const navigate = useNavigate()
-  const [post,setPost] = useState(item)
+import axios from "../api/secureApi";
+import SnackBar from "./displayComponents/SnackBar";
+export default function SinglePost({ post: item }) {
+  const navigate = useNavigate();
+  const [post, setPost] = useState(item);
   const { images, owner, title, body, createdAt } = post;
   let date = new Date(createdAt);
 
-  const { authUser,handleOpenSnackbar } = useGlobalInfo();
+  const { authUser, handleOpenSnackbar } = useGlobalInfo();
   //post like..............
   const handlePostLike = async (e) => {
-    e.stopPropagation()
-    if(!authUser){
+    e.stopPropagation();
+    if (!authUser) {
       // handleOpenSnackbar(3000,"warning","Login first")
-      alert("LOGIN FIRST")
+      alert("LOGIN FIRST");
       return;
     }
     if (post.likes.some((like) => like.owner_id === authUser._id)) {
@@ -89,10 +89,10 @@ export default function SinglePost({post:item}) {
           />
           <CardContent sx={{ mb: 0, pb: 0 }}>
             <Typography gutterBottom variant="h6" component="div">
-              {title.substring(0, 32)}
+              {title.substring(0, 61)} ..
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              {`${body.substring(0, 100)} ...`}
+              {`${body.substring(0, 134)} ...`}
             </Typography>
           </CardContent>
           <CardActions>

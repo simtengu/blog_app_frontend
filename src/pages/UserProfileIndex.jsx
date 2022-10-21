@@ -7,6 +7,7 @@ import {
   DialogTitle,
   Grid,
   IconButton,
+  Skeleton,
   Stack,
   Typography,
 } from "@mui/material";
@@ -26,6 +27,7 @@ const UserProfileIndex = () => {
     handleOpenBackdrop,
     handleCloseBackdrop,
     handleSetUserPosts,
+    isBackdropOpen,
     posts,
     authUser,
     handleCloseSnackbar,
@@ -41,7 +43,7 @@ const UserProfileIndex = () => {
         handleCloseBackdrop();
         let rsData = rs.data;
         if (rs.status === 200) {
-          setUserPosts(rsData.posts)
+          setUserPosts(rsData.posts);
           handleSetUserPosts(rsData.posts);
         }
       } catch (error) {
@@ -58,39 +60,39 @@ const UserProfileIndex = () => {
       navigate("/");
     }
 
-    return ()=>{
+    return () => {
       handleCloseSnackbar();
-    }
+    };
   }, [authUser]);
 
   //product delete logics.............................
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedProductId, setSelectedProduct] = useState("");
-  const [isDeletingPost,setIsDeletingPost] = useState(false)
+  const [isDeletingPost, setIsDeletingPost] = useState(false);
 
   const handleProductDelete = async () => {
     try {
       setIsLoading(true);
-      setIsDeletingPost(true)
+      setIsDeletingPost(true);
       const rs = await axios.delete(`/post/${selectedProductId}`);
-      setIsDeletingPost(false)
+      setIsDeletingPost(false);
       setIsDialogOpen(false);
       if (rs.status === 200) {
         let newPostsList = userPosts.filter(
           (post) => post._id !== selectedProductId
-          );
-          setUserPosts(newPostsList);
-          handleOpenSnackbar(
-            3000,
-            "success",
-            "The post was deleted successfully"
-            );
-          }
-          setIsLoading(false);
-          setSelectedProduct("");
-        } catch (error) {
-      setIsDeletingPost(false)
+        );
+        setUserPosts(newPostsList);
+        handleOpenSnackbar(
+          3000,
+          "success",
+          "The post was deleted successfully"
+        );
+      }
+      setIsLoading(false);
+      setSelectedProduct("");
+    } catch (error) {
+      setIsDeletingPost(false);
       setSelectedProduct("");
       setIsLoading(false);
     }
@@ -106,15 +108,69 @@ const UserProfileIndex = () => {
     setIsDialogOpen(false);
   };
 
-  const postActionsRef = useRef();
-  const handleShowActions = ()=>{
-    postActionsRef.current.style.display = "block"
-  }
-  
-  const handleHideActions = ()=>{
-   
-    postActionsRef.current.style.display = "none"
-
+  if (isBackdropOpen) {
+    return (
+      <Grid container justifyContent="center" mt={3}>
+        <Grid item xs={12} sm={10} md={8}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-around",
+              flexWrap: "wrap",
+            }}
+          >
+            <Skeleton variant="circular" width={200} height={200} />
+            <Box p={1} mt={2}>
+              <Skeleton variant="rectangular" width={250} height={22} />
+              <Skeleton
+                variant="rectangular"
+                sx={{ mt: 1 }}
+                width={250}
+                height={22}
+              />
+              <Skeleton
+                variant="rectangular"
+                sx={{ mt: 1 }}
+                width={250}
+                height={22}
+              />
+              <Skeleton
+                variant="rectangular"
+                sx={{ mt: 1 }}
+                width={50}
+                height={22}
+              />
+              <Stack sx={{ mt: 1.5 }} direction="row">
+                <Skeleton variant="rectangular" width={120} height={42} />
+                <Skeleton
+                  variant="rectangular"
+                  width={100}
+                  sx={{ ml: 1 }}
+                  height={42}
+                />
+              </Stack>
+            </Box>
+          </Box>
+        </Grid>
+        <Grid item xs={12} sm={10} md={8} mt={5}>
+          <Skeleton
+            variant="rectangular"
+            sx={{ mt: 1 }}
+            width={101}
+            height={22}
+          />
+          <Grid mt={1.3} container columnSpacing={1} rowSpacing={1}>
+            {[1,2,3,4,5,6,7,8,9].map((post) => {
+              return (
+                <Grid key={post} item xs={6} md={4}>
+                  <Skeleton variant="rectangular" width={170} height={117} />
+                </Grid>
+              );
+            })}
+          </Grid>
+        </Grid>
+      </Grid>
+    );
   }
 
   return (
@@ -176,7 +232,7 @@ const UserProfileIndex = () => {
               style={{ height: 200, width: 200, borderRadius: "50%" }}
               src={authUser.picture || img}
             />
-            <Box mt={2}>
+            <Box p={1} mt={2}>
               <Typography variant="h5" sx={{ color: "#78756f" }} gutterBottom>
                 {`${authUser.firstName} ${authUser.lastName}`}
               </Typography>
@@ -221,16 +277,13 @@ const UserProfileIndex = () => {
             </Button>
           </Box>
           {userPosts.length > 0 ? (
-            <Box sx={{p:2}}>
+            <Box sx={{ p: 2 }}>
               <Grid container columnSpacing={1} rowSpacing={1}>
                 {userPosts.map((post) => {
                   return (
                     <Grid key={post._id} item xs={6} md={4}>
                       <Box id="indexProduct">
                         <img
-                        // onClick={handleShowActions}
-                        // onMouseEnter={handleShowActions}
-                        // onMouseLeave={handleHideActions}
                           style={{
                             width: "100%",
                             height: "auto",
@@ -239,7 +292,7 @@ const UserProfileIndex = () => {
                           src={post.images[0].image || placeholderImg}
                           alt="post image"
                         />
-                        <Box ref={postActionsRef} id="indexProductActions">
+                        <Box id="indexProductActions">
                           <Stack direction="row">
                             {" "}
                             <IconButton
