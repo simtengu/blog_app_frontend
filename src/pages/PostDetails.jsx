@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import img_placeholder from "../images/imgadd.png";
 import {
   Comment,
   Send,
@@ -280,7 +281,7 @@ const PostDetails = () => {
             </Flickity>
           ) : (
             <img
-              src={post.images[0].image}
+              src={ post?.images.length > 0 ? post.images[0].image : img_placeholder}
               alt="post image"
               style={{ maxWidth: "100%", height: "auto", marginBottom: 2 }}
             />

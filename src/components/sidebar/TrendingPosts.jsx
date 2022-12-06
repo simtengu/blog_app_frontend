@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Box, CardMedia, Grid, Paper, Typography } from "@mui/material";
 import { useGlobalInfo } from "../AppContext";
 import SidebarHeader from "./SidebarHeader";
+import img_placeholder from "../../images/imgadd.png";
 const TrendingItems = () => {
   const {
     authUser,
@@ -35,7 +36,7 @@ const TrendingItems = () => {
                       <CardMedia
                         component="img"
                         sx={{ width: "100%" }}
-                        image={post.images[0].image}
+                        image={ post?.images.length > 0 ? post.images[0].image : img_placeholder}
                         alt="trending img"
                       />
                     </Grid>

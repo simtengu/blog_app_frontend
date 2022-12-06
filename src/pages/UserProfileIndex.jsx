@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AddCircle, Close, Done } from "@mui/icons-material";
 import {
   Box,
@@ -19,6 +19,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "../api/secureApi";
 import { useGlobalInfo } from "../components/AppContext";
 import SnackBar from "../components/displayComponents/SnackBar";
+import img_placeholder from "../images/imgadd.png";
 const UserProfileIndex = () => {
   const navigate = useNavigate();
 
@@ -289,7 +290,7 @@ const UserProfileIndex = () => {
                             height: "auto",
                             borderRadius: 4,
                           }}
-                          src={post.images[0].image || placeholderImg}
+                          src={ post?.images.length > 0 ? post.images[0].image : img_placeholder}
                           alt="post image"
                         />
                         <Box id="indexProductActions">

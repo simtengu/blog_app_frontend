@@ -3,6 +3,7 @@ import { Box, Button, Typography } from "@mui/material";
 import api from "../api";
 import Flickity from "react-flickity-component";
 import { useNavigate } from "react-router-dom";
+import img_placeholder from "../images/imgadd.png";
 
 const flickityOptions = {
   autoPlay: 6000,
@@ -14,7 +15,7 @@ const flickityOptions = {
 };
 
 const FlickityItem = ({ post }) => {
-  const bg_image = post.images[0].image;
+  const bg_image = post?.images.length > 0 ? post.images[0].image : img_placeholder; 
 
   const navigate = useNavigate();
   return (

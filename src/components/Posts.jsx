@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
-
+Box,
   Card,
   CardContent,
   CardHeader,
@@ -32,7 +32,7 @@ const Posts = () => {
   }, []);
   if (isLoading) {
     return (
-      <Container>
+      <Box>
         <Grid container columnSpacing={1} rowSpacing={1} sx={{ mt: 3 }}>
           <Grid item xs={12} mb={3}>
             <Skeleton
@@ -85,7 +85,7 @@ const Posts = () => {
             </Grid>
           ))}
         </Grid>
-      </Container>
+      </Box>
     );
   }
   return (

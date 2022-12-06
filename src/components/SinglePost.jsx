@@ -22,13 +22,14 @@ import { Link, useNavigate } from "react-router-dom";
 import { useGlobalInfo } from "./AppContext";
 import axios from "../api/secureApi";
 import SnackBar from "./displayComponents/SnackBar";
+import img_placeholder from "../images/imgadd.png";
 export default function SinglePost({ post: item }) {
   const navigate = useNavigate();
   const [post, setPost] = useState(item);
   const { images, owner, title, body, createdAt } = post;
   let date = new Date(createdAt);
 
-  const { authUser, handleOpenSnackbar } = useGlobalInfo();
+  const { authUser } = useGlobalInfo();
   //post like..............
   const handlePostLike = async (e) => {
     e.stopPropagation();
@@ -84,7 +85,7 @@ export default function SinglePost({ post: item }) {
           <CardMedia
             component="img"
             height="300"
-            image={images[0].image}
+            image={ post?.images.length > 0 ? post.images[0].image : img_placeholder}
             alt="green iguana"
           />
           <CardContent sx={{ mb: 0, pb: 0 }}>

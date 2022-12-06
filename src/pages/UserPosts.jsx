@@ -17,6 +17,7 @@ import img from "../images/dp.png";
 import placeholderImg from "../images/imgadd.png";
 import { Link, useParams } from "react-router-dom";
 import axios from "../api/secureApi";
+import img_placeholder from "../images/imgadd.png";
 const UserPosts = () => {
   const { userId } = useParams();
   const [userPosts, setUserPosts] = useState([]);
@@ -117,7 +118,7 @@ const UserPosts = () => {
                               height: "auto",
                               borderRadius: 4,
                             }}
-                            src={post.images[0].image || placeholderImg}
+                            src={ post?.images.length > 0 ? post.images[0].image : img_placeholder}
                             alt="post image"
                           />
                         </Link>
